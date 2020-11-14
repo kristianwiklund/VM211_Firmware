@@ -1,3 +1,4 @@
+
 EARTH LISTENER (VM211 & VM211SE)
 
 Ever wondered how good the air quality is in your living room? Or do you need proof of why you fall asleep in a non-ventilated meeting room after 3 hours? Look no further! This DIY experimental kit has all the answers!
@@ -5,6 +6,10 @@ The Earth Listener is an Arduino based sensor device that reads multiple environ
 
 Buy it here: https://www.vellemanformakers.com/earth-listener/
 Follow the tutorial here: https://manuals.velleman.eu/category.php?id=378 
+
+Change log v4.0-kw.1
+- Adding functionality to be able to use the device as an alarm clock.
+- Code to use a ds1307 for time and draw an analogue clock
 
 Change log v4.0
 - fixed some spelling mistakes
