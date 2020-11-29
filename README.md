@@ -7,6 +7,10 @@ The Earth Listener is an Arduino based sensor device that reads multiple environ
 Buy it here: https://www.vellemanformakers.com/earth-listener/
 Follow the tutorial here: https://manuals.velleman.eu/category.php?id=378 
 
+Change log v4.0.x.kw
+- Refactored the screen drawing code into objects that can be enabled/disabled for example by autodetecting the hardware. Screens without any sensor will not be drawn
+- Fixed the original source code to compile on linux
+
 Change log v4.0-kw.1
 - Adding functionality to be able to use the device as an alarm clock.
 - Code to use a ds1307 for time and draw an analogue clock
