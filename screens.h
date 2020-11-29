@@ -10,7 +10,7 @@ public:
 
   bool isEnabled();
   void setEnabled(bool);
-  bool draw();
+  virtual bool draw();
   
 };
 
@@ -46,6 +46,20 @@ class TempScreen : public Screen {
 
 public:
   TempScreen();
+  bool draw();
+};
+
+class PressureScreen : public Screen {
+
+public:
+  PressureScreen();
+  bool draw();
+};
+
+class HumidityScreen : public Screen {
+
+public:
+  HumidityScreen();
   bool draw();
 };
 

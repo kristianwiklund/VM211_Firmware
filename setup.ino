@@ -233,6 +233,8 @@ void setup(void)
     tft.setTextColor(GREEN); 
     tft.print("DETECTED");
     tempscreen.setEnabled(true);
+    pressurescreen.setEnabled(true);
+    humidityscreen.setEnabled(true);
   }
   myBME280.setFilter(1); //0 to 4 is valid. Filter coefficient. See 3.4.4
   myBME280.setStandbyTime(0); //0 to 7 valid. Time between readings. See table 27.
@@ -344,4 +346,13 @@ void setup(void)
   Serial.println();
   slideShowPlaying = INITIAL_SLIDESHOW_STATUS;   //we always start without slide show
   showScreen(1);    //show info screen
+
+  Serial.print("Checking number of active screens: ");
+  Serial.print(NRSCREENS);
+  Serial.print(" candidates, active = ");
+  for(int i=0;i<NRSCREENS;i++) {
+    if(tehScreens[i]->isEnabled())
+      nrOfScreens++;
+  }
+  Serial.println(nrOfScreens);
 }

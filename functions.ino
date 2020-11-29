@@ -6,6 +6,18 @@ InfoScreen infoscreen;
 CO2Screen co2screen;
 TVOCScreen tvocscreen;
 TempScreen tempscreen;
+PressureScreen pressurescreen;
+HumidityScreen humidityscreen;
+
+Screen *tehScreens[] = { // spelling intentional
+		       &co2screen,
+		       &tvocscreen,
+		       &tempscreen,
+		       &pressurescreen,
+		       &humidityscreen
+};
+#define NRSCREENS 5
+int nrOfScreens=0;
 
 /***************************************/
 /* ------------ FUNCTIONS ------------ */
@@ -290,6 +302,7 @@ void showScreen(int screenNr)
     printMenuBtn();
   }
 
+  
   //according to each screen, print some info
   switch (screenNr)
   {
@@ -401,111 +414,12 @@ void showScreen(int screenNr)
       
     //eCO2 screen
   case 3:
-    co2screen.draw();
-    break;
-
-    
-
-    //Temperature screen
   case 4:
-    tempscreen.draw();
-    break; 
-
-      
-      //Pressure screen
-      case 5:
-        //print value, icon & update LED
-        tft.setFont();  //standard system font
-        tft.setTextSize(3);
-        tft.setCursor(120, 110);
-        tft.setTextColor(GREY,BLACK);
-        if(AMBIENTPRESSURE_BME280_c < 1000)
-        {
-            tft.print(" ");     //add leading spaces
-        }
-        tft.print(AMBIENTPRESSURE_BME280_c,1);
-        tft.println(" mBar");
-        showbgd(10, 85, pressure_100x77, 100, 77, WHITE, BLACK);
-        /*
-        //plot pressure val @ sea level for comparison -> needs to be set for proper altitude value
-        //(see note at case 9)
-        tft.setTextSize(1);
-        tft.setCursor(145, 140);
-        tft.setTextColor(BLUE,BLACK);
-        float convertedSeaLevelPressure;
-        convertedSeaLevelPressure = seaLevelPressure / 100;
-        tft.print(convertedSeaLevelPressure,1); tft.print(" mBar @ sea level");
-        */
-        controlLED('W');
-        controlLogo(WHITE);
-        break;
-
-        
-      //TVOC screen  
-      case 6:
-	tvocscreen.draw();
-        break;
-
-    
-      //Humidity screen
-      case 7:
-        //print value, icon & update LED
-        tft.setFont();  //standard system font
-        tft.setTextSize(3);
-        tft.setCursor(140, 120);
-        if (HUMIDITY_BME280 < 30)
-        {
-          tft.setTextColor(RED,BLACK);
-          showbgd(10, 75, humidity_100x77, 100, 77, RED, BLACK);
-          controlLED('R');
-          controlLogo(RED);
-        }
-        else if ((HUMIDITY_BME280 >= 30) && (HUMIDITY_BME280 <= 50))
-        {
-          tft.setTextColor(GREEN,BLACK);
-          showbgd(10, 75, humidity_100x77, 100, 77, GREEN, BLACK);
-          controlLED('G');
-          controlLogo(GREEN);
-        }
-        else if (HUMIDITY_BME280 > 50)
-        {
-          tft.setTextColor(BLUE,BLACK);
-          showbgd(10, 75, humidity_100x77, 100, 77, BLUE, BLACK);
-          controlLED('B');
-          controlLogo(BLUE);
-        }
-        if(HUMIDITY_BME280 < 10) { tft.print(" ");   }  //add leading spaces
-        tft.print(HUMIDITY_BME280,1);
-        tft.println(" %");
-        /*
-        //print scale with fillRect(startX, startY, width, height, color)
-        tft.fillRect( 10, 175, 91, 18, RED);
-        tft.fillRect( 102,175, 59, 18, GREEN);
-        tft.fillRect( 162,175,148, 18, BLUE);
-        */
-        //print scale from bitmap file - file is 1 line, so print it 18 times
-        for( int zz = 0; zz < 18; zz++)
-        {
-          tft.setAddrWindow(startXimg, startYimg + zz, startXimg + widthImg - 1, startYimg + zz + heightImg - 1);
-          tft.pushColors((const uint8_t*)humi_graph_300x1, widthImg * heightImg, 1, false);
-        }
-        tft.fillRect( 10,193,300, 6, BLACK);  //erase the bottom under the scale (from previous indicator)
-        //draw indicator with drawLine(startX, startY, endX, endY, color)
-        //calcVal = ( (HUMIDITY_BME280 / 100) * 300) + 10;
-        calcVal = HUMIDITY_BME280 * 3;
-        calcVal = calcVal + 10;
-        Xindic = (int) calcVal;
-        if(Xindic < 10){Xindic = 10;}
-        else if(Xindic > 300){Xindic = 300;}
-        tft.drawLine(Xindic, 175, Xindic, 198, WHITE);
-        //print values of scale
-        tft.setTextSize(1); 
-        tft.setCursor(10, 165); tft.setTextColor(RED,BLACK); tft.print("0");
-        tft.setCursor(103, 165); tft.setTextColor(GREEN,BLACK); tft.print("31");
-        tft.setCursor(163, 165); tft.setTextColor(BLUE,BLACK); tft.print("51");
-        tft.setCursor(290, 165); tft.setTextColor(BLUE,BLACK); tft.print("100");       
-        break;
-
+  case 5:
+  case 6:
+  case 7:
+    tehScreens[screenNr]->draw();
+    break;
 
       //lightning screen
       case 8:
