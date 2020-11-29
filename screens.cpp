@@ -508,3 +508,38 @@ bool HumidityScreen::draw() {
 	
   return true;
 }
+// ------------------ lightningscreen -----------------
+
+
+LightningScreen::LightningScreen() {
+  setEnabled(true); // boot screen is always visible
+}
+
+extern String lastErrorLine1;
+extern String lastErrorLine2;
+
+
+bool LightningScreen::draw() {
+
+  if(!isEnabled())
+    return false;
+  //print lightning information from previous strike
+  tft.setFont();  //standard system font
+  tft.setTextSize(2);
+  tft.setCursor(35, 78);
+  tft.setTextColor(RED,BLACK); 
+  tft.println(lastErrorLine1);
+  tft.setCursor(35, 98);
+  tft.println(lastErrorLine2);
+  //print icon
+  showbgd(210, 125, lightning_100x77, 100, 77, YELLOW, BLACK);
+  //print last detection
+  tft.setCursor(35, 145);
+  tft.setTextColor(YELLOW,BLACK);
+  tft.println("Last detection:");
+  tft.setCursor(35, 165);
+  printLastDetectionTimeAS3935();
+  
+
+  return true;
+}

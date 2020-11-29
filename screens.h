@@ -71,4 +71,11 @@ public:
   bool draw();
 };
 
+class LightningScreen : public Screen {
+
+public:
+  LightningScreen();
+  bool draw();
+};
+
 

@@ -161,7 +161,6 @@ boolean MetricON;  //boolean to check if values of temperature and lightning dis
 int MetricON_EEPROMaddr = 2;  // address to store this value in long term memory (EEPROM)
 
 
-
 /***************************************/
 /* ----------- LOOP CODE ------------ */
 /***************************************/
@@ -341,8 +340,10 @@ void loop(void)
             if( ( millis() - timeStartSlide ) > (slideshowTimer * 1000) )
             {
                   previousScreenNr = currentScreenNr;
-                  currentScreenNr++;
-                  if(currentScreenNr > MAXSCREEN){currentScreenNr = 3;}
+		  Serial.print("Changing screen ");
+		  Serial.print(currentScreenNr);
+		  currentScreenNr = getnewcurrentscreen(currentScreenNr);
+
             }
           }
           

@@ -8,7 +8,7 @@ void controlLED(char COLOR);
 void getTimeSinceBoot(void);
 int returnMinutes(unsigned long Millis);
 void showScreen(int screenNr);
-void lightningscreen(void);
+void oldlightningscreen(void);
 void setupAS3935(void);
 void updateLightningSense(void);
 void printValues(void);

@@ -9,6 +9,7 @@ TempScreen tempscreen;
 PressureScreen pressurescreen;
 HumidityScreen humidityscreen;
 ClockScreen clockscreen;
+LightningScreen lightningscreen;
 
 Screen *tehScreens[] = { // spelling intentional
 		       &co2screen,
@@ -16,11 +17,28 @@ Screen *tehScreens[] = { // spelling intentional
 		       &tempscreen,
 		       &pressurescreen,
 		       &humidityscreen,
-		       0,
+		       &lightningscreen,
 		       &clockscreen
 };
 #define NRSCREENS 7
 int nrOfScreens=0;
+#define MAXSCREEN (NRSCREENS+2)
+
+// calculate the next screen number
+int getnewcurrentscreen(int csn) {
+  if (csn+1 > MAXSCREEN) {
+    csn = 2; // wrapover
+  }
+  
+  if (tehScreens[csn+1-3] && tehScreens[csn+1-3]->isEnabled()) {
+    Serial.print("->");
+    Serial.println(csn+1);
+    return (csn+1);
+  }
+  else
+    return getnewcurrentscreen(csn+1);  
+}
+
 
 /***************************************/
 /* ------------ FUNCTIONS ------------ */
@@ -421,35 +439,15 @@ void showScreen(int screenNr)
   case 5:
   case 6:
   case 7:
+  case 8:
   case 9:
     tehScreens[screenNr-3]->draw();
     break;
 
-      //lightning screen
-      case 8:
-        //print lightning information from previous strike
-        tft.setFont();  //standard system font
-        tft.setTextSize(2);
-        tft.setCursor(35, 78);
-        tft.setTextColor(RED,BLACK); 
-        tft.println(lastErrorLine1);
-        tft.setCursor(35, 98);
-        tft.println(lastErrorLine2);
-        //print icon
-        showbgd(210, 125, lightning_100x77, 100, 77, YELLOW, BLACK);
-        //print last detection
-        tft.setCursor(35, 145);
-        tft.setTextColor(YELLOW,BLACK);
-        tft.println("Last detection:");
-        tft.setCursor(35, 165);
-        printLastDetectionTimeAS3935();
-        break;
-
-
       //lightning screen after interrupt from sensor
       case 81:
         //print lightning information
-        lightningscreen();
+        detectedlightningscreen();
         int tempScreenNr;
         tempScreenNr = previousScreenNr;  //store previous screen to show later
         previousScreenNr = 81;
@@ -469,7 +467,7 @@ void showScreen(int screenNr)
 
 //print the screen with lightning info after interrupt
 //also stores error messages so we can show them later
-void lightningscreen()
+void detectedlightningscreen()
 {
           tft.setFont();  //standard system font
           tft.setTextSize(2);
