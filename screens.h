@@ -28,4 +28,18 @@ public:
   bool draw();
 };
 
+class CO2Screen : public Screen {
+
+public:
+  CO2Screen();
+  bool draw();
+};
+
+class TVOCScreen : public Screen {
+
+public:
+  TVOCScreen();
+  bool draw();
+};
+
 

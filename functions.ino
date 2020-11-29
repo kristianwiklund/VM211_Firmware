@@ -3,6 +3,8 @@
 
 BootScreen bootscreen;
 InfoScreen infoscreen;
+CO2Screen co2screen;
+TVOCScreen tvocscreen;
 
 /***************************************/
 /* ------------ FUNCTIONS ------------ */
@@ -68,6 +70,8 @@ void printDriverError( CCS811Core::status errorCode )
       Serial.print("SUCCESS");
       tft.setTextColor(GREEN); 
       tft.print("DETECTED");
+      co2screen.setEnabled(true);
+      tvocscreen.setEnabled(true);
       break;
     case CCS811Core::SENSOR_ID_ERROR:
       Serial.print("ID_ERROR");
@@ -273,8 +277,7 @@ void showScreen(int screenNr)
   int Xindic;
   float calcVal;
   //local vars for plotting the scales/graphs
-  int startXimg = 10; int startYimg = 175;
-  int widthImg = 300;  int heightImg = 1;
+  // replaced by defined in config.h
 
   //if a screen has been changed, clear the part below the header & update menu buttons
   if(currentScreenNr != previousScreenNr)
@@ -289,186 +292,121 @@ void showScreen(int screenNr)
   //according to each screen, print some info
   switch (screenNr)
   {
-      //Boot screen
-      case 0:
-	// call the thingumajig instead
-	bootscreen.draw();
-        break;
+    //Boot screen
+  case 0:
+    // call the thingumajig instead
+    bootscreen.draw();
+    break;
+    
+    //Info screen
+  case 1:
+    infoscreen.draw();
+    break;
+    
+	//Setup screen - too many globals to get fixed quickly as an object - ignoring
+  case 2:
+    //global font & color
+    tft.setFont();  //standard system font
+    tft.setTextSize(1);
+    tft.setTextColor(GREYY,BLACK); 
+  
+    //buzzer
+    tft.setCursor(50, 125);
+    if(BuzzerEnabled)
+      {
+	showbgd(40, 72, buzzer_on_65x50, 65, 50, GREYY, BLACK);
+	tft.print("Buzzer ON ");
+      }
+    else
+      {
+	showbgd(40, 72, buzzer_off_65x50, 65, 50, GREYY, BLACK);
+	tft.print("Buzzer OFF");
+      }
+  
+    //metric/imperial
+    tft.setCursor(140, 125);
+    if(MetricON)
+      {
+	showbgd(127, 72, metrical_65x50, 65, 50, GREYY, BLACK);
+	tft.print("Metrical");
+      }
+    else
+      {
+	showbgd(127, 72, imperial_65x50, 65, 50, GREYY, BLACK);
+	tft.print("Imperial");
+      }
+  
+    //slideshow timer
+    showbgd(214, 72, slideshow_65x50, 65, 50, GREYY, BLACK);
+    tft.setCursor(215, 125);
+    tft.print("Timer: "); tft.print(slideshowTimer); if(slideshowTimer < 10){tft.print(" ");}
+  
+    //lightning sensitivity
+    tft.setCursor(40, 200);
+    if(globalSense == 1)
+      {      
+	showbgd(40, 148, lightning_low_65x50, 65, 50, GREYY, BLACK);
+	tft.print("Sense Low   ");
+      }
+    else if(globalSense == 2)
+      {
+	showbgd(40, 148, lightning_65x50, 65, 50, GREYY, BLACK);
+	tft.print("Sense Medium");
+      }
+    else if(globalSense == 3)
+      {
+	showbgd(40, 148, lightning_high_65x50, 65, 50, GREYY, BLACK);
+	tft.print("Sense High  ");
+      }
+    else
+      {
+	showbgd(40, 148, lightning_65x50, 65, 50, RED, BLACK);
+	tft.print("Sense Error!");
+      }
+  
+    //indoor/outdoor mode
+    tft.setCursor(135, 200);
+    if(AS3935_OUTDOORS)
+      {
+	showbgd(127, 148, outdoor_65x50, 65, 50, GREYY, BLACK);
+	tft.print("Outdoor");
+      }
+    else
+      {
+	showbgd(127, 148, indoor_65x50, 65, 50, GREYY, BLACK);
+	tft.print(" Indoor");
+      }
+  
+    //chip interface AS3935
+    tft.setCursor(215, 200);
+    if(AS3935_SPI)
+      {
+	showbgd(214, 148, SPI_65x50, 65, 50, GREYY, BLACK);
+	tft.print("Interface");
+      }
+    else
+      {
+	showbgd(214, 148, IIC_65x50, 65, 50, GREYY, BLACK);
+	tft.print("Interface");
+      }
+  
+    //control LED
+    controlLED('0'); //off
+    //control Logo
+    controlLogo(GREYY);
+
+    break;
+        
       
-      //Info screen
-      case 1:
-	infoscreen.draw();
-	break;
+    //eCO2 screen
+  case 3:
+    co2screen.draw();
+    break;
 
-      //Setup screen
-      case 2:
-        //global font & color
-        tft.setFont();  //standard system font
-        tft.setTextSize(1);
-        tft.setTextColor(GREYY,BLACK); 
+    
 
-        //buzzer
-        tft.setCursor(50, 125);
-        if(BuzzerEnabled)
-        {
-          showbgd(40, 72, buzzer_on_65x50, 65, 50, GREYY, BLACK);
-          tft.print("Buzzer ON ");
-        }
-        else
-        {
-          showbgd(40, 72, buzzer_off_65x50, 65, 50, GREYY, BLACK);
-          tft.print("Buzzer OFF");
-        }
-
-        //metric/imperial
-        tft.setCursor(140, 125);
-        if(MetricON)
-        {
-          showbgd(127, 72, metrical_65x50, 65, 50, GREYY, BLACK);
-          tft.print("Metrical");
-        }
-        else
-        {
-          showbgd(127, 72, imperial_65x50, 65, 50, GREYY, BLACK);
-          tft.print("Imperial");
-        }
-
-        //slideshow timer
-        showbgd(214, 72, slideshow_65x50, 65, 50, GREYY, BLACK);
-        tft.setCursor(215, 125);
-        tft.print("Timer: "); tft.print(slideshowTimer); if(slideshowTimer < 10){tft.print(" ");}
-
-        //lightning sensitivity
-        tft.setCursor(40, 200);
-        if(globalSense == 1)
-        {      
-          showbgd(40, 148, lightning_low_65x50, 65, 50, GREYY, BLACK);
-          tft.print("Sense Low   ");
-        }
-        else if(globalSense == 2)
-        {
-          showbgd(40, 148, lightning_65x50, 65, 50, GREYY, BLACK);
-          tft.print("Sense Medium");
-        }
-        else if(globalSense == 3)
-        {
-          showbgd(40, 148, lightning_high_65x50, 65, 50, GREYY, BLACK);
-          tft.print("Sense High  ");
-        }
-        else
-        {
-          showbgd(40, 148, lightning_65x50, 65, 50, RED, BLACK);
-          tft.print("Sense Error!");
-        }
-
-        //indoor/outdoor mode
-        tft.setCursor(135, 200);
-        if(AS3935_OUTDOORS)
-        {
-          showbgd(127, 148, outdoor_65x50, 65, 50, GREYY, BLACK);
-          tft.print("Outdoor");
-        }
-        else
-        {
-          showbgd(127, 148, indoor_65x50, 65, 50, GREYY, BLACK);
-          tft.print(" Indoor");
-        }
-        
-        //chip interface AS3935
-        tft.setCursor(215, 200);
-        if(AS3935_SPI)
-        {
-          showbgd(214, 148, SPI_65x50, 65, 50, GREYY, BLACK);
-          tft.print("Interface");
-        }
-        else
-        {
-          showbgd(214, 148, IIC_65x50, 65, 50, GREYY, BLACK);
-          tft.print("Interface");
-        }
-
-        //control LED
-        controlLED('0'); //off
-        //control Logo
-        controlLogo(GREYY);
-        break;
-        
-      
-      //eCO2 screen
-      case 3:
-        //print value, icon & update LED
-        tft.setFont();  //standard system font
-        tft.setTextSize(3);
-        tft.setCursor(140, 120);
-        if (CO2 < 800)
-        {
-          tft.setTextColor(GREEN,BLACK);
-          showbgd(10, 75, eCO2_100x77, 100, 77, GREEN, BLACK);
-          controlLED('G');
-          controlLogo(GREEN);
-        }
-        else if ((CO2 >=800) && (CO2 < 1000))
-        {
-          tft.setTextColor(BLUE,BLACK);
-          showbgd(10, 75, eCO2_100x77, 100, 77, BLUE, BLACK);
-          controlLED('B');
-          controlLogo(BLUE);
-        }
-        else if ((CO2 >= 1000) && (CO2 < 1500))
-        {
-          tft.setTextColor(YELLOW,BLACK);
-          showbgd(10, 75, eCO2_100x77, 100, 77, YELLOW, BLACK);
-          controlLED('Y');
-          controlLogo(YELLOW);
-        }
-        else if (CO2 >= 1500)
-        {
-          tft.setTextColor(RED,BLACK);
-          showbgd(10, 75, eCO2_100x77, 100, 77, RED, BLACK);
-          controlLED('R');
-          controlLogo(RED);
-        }      
-        if(CO2 < 10)          {  tft.print("   "); }    //add leading spaces
-        else if(CO2 < 100)    {  tft.print("  ");  }
-        else if(CO2 < 1000)   {  tft.print(" ");   }
-        tft.print(CO2);
-        tft.println(" ppm");
-        /*
-        //print scale with fillRect(startX, startY, width, height, color)
-        tft.fillRect( 10, 175, 46, 18, GREEN);
-        tft.fillRect( 57, 175, 22, 18, BLUE);
-        tft.fillRect( 80, 175, 56, 18, YELLOW);
-        tft.fillRect( 137,175,173, 18, RED);
-        */
-        //print scale from bitmap file - file is 1 line, so print it 18 times
-        for( int zz = 0; zz < 18; zz++)
-        {
-          tft.setAddrWindow(startXimg, startYimg + zz, startXimg + widthImg - 1, startYimg + zz + heightImg - 1);
-          tft.pushColors((const uint8_t*)eCO2_graph_300x1, widthImg * heightImg, 1, false);
-        }
-        tft.fillRect( 10,193,300,  6, BLACK);  //erase the bottom under the scale (from previous indicator)
-        //draw indicator with drawLine(startX, startY, endX, endY, color)
-        //calcVal = ( ( (CO2-400) / (3000-400) ) * 300 ) + 10;
-        calcVal = CO2-400;
-        calcVal = calcVal / (3000-400);
-        calcVal = calcVal * 300;
-        calcVal = calcVal + 10;    
-        Xindic = (int) calcVal;
-        if(Xindic < 10){Xindic = 10;}
-        else if(Xindic > 300){Xindic = 300;}
-        tft.drawLine(Xindic, 175, Xindic, 198, WHITE);
-        //print values of scale
-        tft.setTextSize(1); 
-        tft.setCursor(10, 165); tft.setTextColor(GREEN,BLACK); tft.print("400");
-        tft.setCursor(48, 165); tft.setTextColor(BLUE,BLACK); tft.print("801");
-        tft.setCursor(81, 165); tft.setTextColor(YELLOW,BLACK); tft.print("1001");
-        tft.setCursor(138, 165); tft.setTextColor(RED,BLACK); tft.print("1501"); 
-        tft.setCursor(285, 165); tft.setTextColor(RED,BLACK); tft.print("3000");       
-        break;
-        
-
-      //Temperature screen
-      case 4:
+    //Temperature screen
+  case 4:
         //print value, icon & update LED
         tft.setFont();  //standard system font
         tft.setTextSize(3);
@@ -609,62 +547,7 @@ void showScreen(int screenNr)
         
       //TVOC screen  
       case 6:
-        //print value, icon & update LED
-        tft.setFont();  //standard system font
-        tft.setTextSize(3);
-        tft.setCursor(140, 120);
-        if (TVOC <= 50)
-        {
-          tft.setTextColor(GREEN,BLACK);
-          showbgd(10, 75, tvoc_100x77, 100, 77, GREEN, BLACK);
-          controlLED('G');
-          controlLogo(GREEN);
-        }
-        else if ((TVOC > 50) && (TVOC <= 150))
-        {
-          tft.setTextColor(YELLOW,BLACK);
-          showbgd(10, 75, tvoc_100x77, 100, 77, YELLOW, BLACK);
-          controlLED('Y');
-          controlLogo(YELLOW);
-        }
-        else if (TVOC > 150)
-        {
-          tft.setTextColor(RED,BLACK);
-          showbgd(10, 75, tvoc_100x77, 100, 77, RED, BLACK);
-          controlLED('R');
-          controlLogo(RED);
-        }
-        if(TVOC < 10){          tft.print("   ");  }   //add leading spaces
-        else if(TVOC < 100){    tft.print("  ");   }
-        else if(TVOC < 1000){   tft.print(" ");    }
-        tft.print(TVOC);
-        tft.println(" ppb");
-        /*
-        //print scale with fillRect(startX, startY, width, height, color)
-        tft.fillRect( 10, 175, 50, 18, GREEN);
-        tft.fillRect( 61, 175, 99, 18, YELLOW);
-        tft.fillRect( 161,175,149, 18, RED);
-        */
-        //print scale from bitmap file - file is 1 line, so print it 18 times
-        for( int zz = 0; zz < 18; zz++)
-        {
-          tft.setAddrWindow(startXimg, startYimg + zz, startXimg + widthImg - 1, startYimg + zz + heightImg - 1);
-          tft.pushColors((const uint8_t*)tvoc_graph_300x1, widthImg * heightImg, 1, false);
-        }
-        tft.fillRect( 10,193,300, 6, BLACK);  //erase the bottom under the scale (from previous indicator)
-        //draw indicator with drawLine(startX, startY, endX, endY, color)
-        //calcVal = TVOC + 10;
-        calcVal = TVOC + 10;
-        Xindic = (int) calcVal;
-        if(Xindic < 10){Xindic = 10;}
-        else if(Xindic > 300){Xindic = 300;}
-        tft.drawLine(Xindic, 175, Xindic, 198, WHITE);
-        //print values of scale
-        tft.setTextSize(1); 
-        tft.setCursor(10, 165); tft.setTextColor(GREEN,BLACK); tft.print("0");
-        tft.setCursor(60, 165); tft.setTextColor(YELLOW,BLACK); tft.print("51");
-        tft.setCursor(160, 165); tft.setTextColor(RED,BLACK); tft.print("151");
-        tft.setCursor(290, 165); tft.setTextColor(RED,BLACK); tft.print("300");       
+	tvocscreen.draw();
         break;
 
     

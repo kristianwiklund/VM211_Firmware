@@ -16,6 +16,12 @@
 #define MAXSCREEN 9 // change to 8 to disable clock display
 #define INITIAL_SLIDESHOW_STATUS 1 // change to 0 to not run slideshow from start. Using the slideshow from start will show the config screens, before getting into the loop correctly.
 
+// display positioning
+#define startXimg 10
+#define startYimg 175
+#define widthImg 300
+#define heightImg 1
+
 // clock settings
 
 #define CLOCK_X 160 // center x
