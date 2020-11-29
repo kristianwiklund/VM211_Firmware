@@ -16,19 +16,19 @@ String SWversion = "v4.0";
 #include <EEPROM.h>                             // Library to read & store info in EEPROM long term memory
 
 /* --- Local Libraries --- */
-#include "src\Adafruit-GFX-Library\Adafruit_GFX.h"     	  // Core graphics library by Adafruit
-#include "src\Adafruit-GFX-Library\Fonts\FreeSans9pt7b.h" // Font FreeSans 9pts (as an alternative for basic font)
-#include "src\MCUFRIEND_kbv\MCUFRIEND_kbv.h"           	  // TFT library by David Prentice
-#include "src\SDmega\SDmega.h"                          	// SD library (mod by PSI to work with MEGA & TFT SD card shield)
-#include "src\SparkFun_BME280\src\SparkFunBME280.h"    	  // BME280 library by SparkFun
-#include "src\SparkFun_CCS811\src\SparkFunCCS811.h"    	  // CCS811 library by SparkFun
-#include "src\SparkFun_AS3935\src\SparkFun_AS3935.h"          // AS3935 library by SparkFun
-#include "src\TFTLCD-Library\Adafruit_TFTLCD.h"        	  // Hardware-specific library for TFT screen by Adafruit
-#include "src\TouchScreen\TouchScreen.h"               	  // TouchScreen library by Adafruit
+#include "src/Adafruit-GFX-Library/Adafruit_GFX.h"     	  // Core graphics library by Adafruit
+#include "src/Adafruit-GFX-Library/Fonts/FreeSans9pt7b.h" // Font FreeSans 9pts (as an alternative for basic font)
+#include "src/MCUFRIEND_kbv/MCUFRIEND_kbv.h"           	  // TFT library by David Prentice
+#include "src/SDmega/SDmega.h"                          	// SD library (mod by PSI to work with MEGA & TFT SD card shield)
+#include "src/SparkFun_BME280/src/SparkFunBME280.h"    	  // BME280 library by SparkFun
+#include "src/SparkFun_CCS811/src/SparkFunCCS811.h"    	  // CCS811 library by SparkFun
+#include "src/SparkFun_AS3935/src/SparkFun_AS3935.h"          // AS3935 library by SparkFun
+#include "src/TFTLCD-Library/Adafruit_TFTLCD.h"        	  // Hardware-specific library for TFT screen by Adafruit
+#include "src/TouchScreen/TouchScreen.h"               	  // TouchScreen library by Adafruit
 #include "bitmaps.h"                            			    // Icon library (local, hence the "")
-#include "src\RTClib\RTClib.h"                            // Adafruit RTC library 
+#include "src/RTClib/RTClib.h"                            // Adafruit RTC library 
 #include "config.h"                                       // instead of the magic numbers in the original code
-
+//#include "src/WiFiEspAT/src/WiFiEspAT.h"
 /* --- first boot --- */
 int firstBoot_EEPROMaddr = 5;   //EEPROM long term memory adress that we use to check if the EarthListener has been booted before (default will be true).
 

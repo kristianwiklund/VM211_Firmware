@@ -1,4 +1,4 @@
-#include "AS3935_I2c_PSImod.h"
+#include "AS3935_I2C_PSImod.h"
 
 AS3935_I2C::AS3935_I2C(uint8_t DEVADDx)
 {

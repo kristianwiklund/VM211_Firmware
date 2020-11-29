@@ -22,7 +22,7 @@
 //
 
 #include "config.h"
-#include <Math.h>
+#include <math.h>
 
 #ifdef WITH_CLOCK
 

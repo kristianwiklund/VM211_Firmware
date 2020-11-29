@@ -6,7 +6,7 @@
 #include "avr/pgmspace.h"
 #include "util/delay.h"
 #include "stdlib.h"
-#include "..\I2C\I2C.h"
+#include "../I2C/I2C.h"
 
 class AS3935_I2C
 {
