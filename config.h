@@ -8,10 +8,6 @@
 #define WITH_CLOCK
 #define WITH_ESP01 // for wifi
 
-#ifdef WITH_CLOCK
-
-// RTC on board.
-// possible improvement is to autodetect and enable only if the RTC is found
 
 #define MAXSCREEN 9 // change to 8 to disable clock display
 #define INITIAL_SLIDESHOW_STATUS 1 // change to 0 to not run slideshow from start. Using the slideshow from start will show the config screens, before getting into the loop correctly.
@@ -30,11 +26,7 @@
 #define CLOCK_CR 2  // centre blob radius
 #define CLOCK_H_LEN 4 // length of hour marks
 #define CLOCK_H_HAND 0.7 // length of hour hand (as fraction of the clock radius)
-#else
-// no RTC on board
-#define MAXSCREEN 8
 
-#endif
 
 // - from original vmm_...ino file, should normally not be touched!
 /* --- LCD panel with touch --- */

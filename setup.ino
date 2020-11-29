@@ -311,7 +311,7 @@ void setup(void)
   if (rtc.begin()) 
   {
       Serial.println("RTC initialized!");
-      RTCpresent = 1;
+      clockscreen.setEnabled(true);
       tft.setTextColor(GREEN); 
       tft.print("DETECTED");
       DateTime now = rtc.now(); 
@@ -333,7 +333,6 @@ void setup(void)
   else
   {
      Serial.println(" RTC failed or not present!");
-     RTCpresent = 0;
      tft.setTextColor(RED); 
      tft.print("NOT FOUND");
   }
@@ -351,7 +350,7 @@ void setup(void)
   Serial.print(NRSCREENS);
   Serial.print(" candidates, active = ");
   for(int i=0;i<NRSCREENS;i++) {
-    if(tehScreens[i]->isEnabled())
+    if(tehScreens[i] && tehScreens[i]->isEnabled())
       nrOfScreens++;
   }
   Serial.println(nrOfScreens);

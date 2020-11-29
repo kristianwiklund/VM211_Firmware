@@ -20,14 +20,30 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 //
-
+#include <Arduino.h>
 #include "config.h"
 #include <math.h>
+#include "screens.h"
 
-#ifdef WITH_CLOCK
+// clock includes
+#include "src/RTClib/RTClib.h"                            // Adafruit RTC library 
+extern RTC_DS1307 rtc;
 
-void clockscreen() {
+// graphics includes
+#include "src/TFTLCD-Library/Adafruit_TFTLCD.h"        	  // Hardware-specific library for TFT screen by Adafruit
+#include "src/Adafruit-GFX-Library/Fonts/FreeSans9pt7b.h"
+#include "src/MCUFRIEND_kbv/MCUFRIEND_kbv.h"           	  // TFT library by David Prentice
+extern MCUFRIEND_kbv tft;
+
+
+ClockScreen::ClockScreen() {
+
+}
+
+bool ClockScreen::draw() {
   static int oldsec=0, oldmin=0, oldhour=0;
+  if(!isEnabled())
+    return false;
   
   DateTime now = rtc.now();
 
@@ -96,7 +112,7 @@ if(oldmin!=now.minute()) {
    
  tft.drawLine(CLOCK_X, CLOCK_Y, CLOCK_R*sin(now.second()*2*PI/60)+CLOCK_X,-CLOCK_R*cos(now.second()*2*PI/60)+CLOCK_Y, WHITE);
   
-
+ return true;
 }
 
-#endif
+

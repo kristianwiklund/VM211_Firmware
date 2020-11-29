@@ -133,7 +133,6 @@ boolean SDpresent = 0;        //boolean to store if SD card is present during se
 boolean logFileExists = 0;    //boolean to store if logfile exists on SD card
 
 /* --- real time clock - currently set to DS1307 rtc but can be changed to anything that the RTC library supports --- */
-boolean RTCpresent = 0;       //boolean to store if RTC is present during setup
 RTC_DS1307 rtc;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; // from RTCLib example
 

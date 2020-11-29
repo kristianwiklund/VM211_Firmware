@@ -64,3 +64,11 @@ public:
 };
 
 
+class ClockScreen : public Screen {
+
+public:
+  ClockScreen();
+  bool draw();
+};
+
+

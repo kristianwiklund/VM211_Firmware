@@ -8,15 +8,18 @@ TVOCScreen tvocscreen;
 TempScreen tempscreen;
 PressureScreen pressurescreen;
 HumidityScreen humidityscreen;
+ClockScreen clockscreen;
 
 Screen *tehScreens[] = { // spelling intentional
 		       &co2screen,
 		       &tvocscreen,
 		       &tempscreen,
 		       &pressurescreen,
-		       &humidityscreen
+		       &humidityscreen,
+		       0,
+		       &clockscreen
 };
-#define NRSCREENS 5
+#define NRSCREENS 7
 int nrOfScreens=0;
 
 /***************************************/
@@ -418,7 +421,8 @@ void showScreen(int screenNr)
   case 5:
   case 6:
   case 7:
-    tehScreens[screenNr]->draw();
+  case 9:
+    tehScreens[screenNr-3]->draw();
     break;
 
       //lightning screen
@@ -454,13 +458,6 @@ void showScreen(int screenNr)
 
       // alarm clock screen
 
-#ifdef WITH_CLOCK
-      case 9:
-        // draw clock screen
-        clockscreen();
-        break;
-#endif
-        
       default:
         //Serial.println("Nothing to see here folks!");
         break;
