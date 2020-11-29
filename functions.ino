@@ -1,4 +1,7 @@
 #include "config.h"
+#include "screens.h"
+
+BootScreen bootscreen;
 
 /***************************************/
 /* ------------ FUNCTIONS ------------ */
@@ -287,36 +290,9 @@ void showScreen(int screenNr)
   {
       //Boot screen
       case 0:
-        //print logo Velleman
-        controlLogo(GREYY);
-        //print logo EarthListener
-        showbgd(35, 65, EarthListener_200x150, 200, 150, WHITE, BLACK);
-        //print SW version
-        tft.setFont(&FreeSans9pt7b);
-        tft.setCursor(235, 207);
-        tft.setTextColor(GREYY);  
-        tft.setTextSize(1);
-        tft.print(SWversion);
-        //set font to standard system font
-        tft.setFont();
-        //test LED
-        controlLED('W');
-        delay(1500);
-        //cycle logo & LED color
-        showbgd(35, 65, EarthListener_200x150, 200, 150, RED, BLACK);
-        controlLED('R');
-        delay(500);
-        showbgd(35, 65, EarthListener_200x150, 200, 150, GREEN, BLACK);
-        controlLED('G');
-        delay(500);
-        showbgd(35, 65, EarthListener_200x150, 200, 150, BLUE, BLACK);
-        controlLED('B');
-        delay(500);
-        //clear logo & version for sensor info
-        tft.fillRect(0,65,320,175,BLACK);
-        controlLED('0');
+	// call the thingumajig instead
+	bootscreen.draw();
         break;
-
       
       //Info screen
       case 1:

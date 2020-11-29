@@ -5,7 +5,7 @@
   Based on examples by Adafruit, SparkFun and Tom Igoe
   See tab 'info_and_refs' for more documentation
 ******************************************************************************/
-String SWversion = "v4.0";
+
 
 /***************************************/
 /* ---------- DECLARATIONS ----------- */
@@ -98,68 +98,27 @@ SparkFun_AS3935 lightningSPI;              // define Lightning sensor for SPI
 SparkFun_AS3935 lightningIIC(AS3935_ADD);  // define Lightning sensor on specific address for IIC
 boolean AS3935_bootOK;                     // value to store OK boot status of the sensor
 
-
-/* --- LCD panel with touch --- */
-//be aware we use the TFT LCD on a Arduino Mega
-#define YP A3  // must be an analog pin, use "An" notation!
-#define XM A2  // must be an analog pin, use "An" notation!
-#define YM 9   // can be a digital pin
-#define XP 8   // can be a digital pin
-#define touchPin 38 //pin to use for reading touchscreen
+// touch screen settings
 int Xpos; int Ypos; //global positions to store touchscreen location
 unsigned long touchedTime = 0;     //time when last touchscreen interaction occurred;
 int touchTimeout = 300;           // timeout between touch inputs (ms)
-
-#define TS_MINX 100
-#define TS_MAXX 920
-#define TS_MINY 70
-#define TS_MAXY 900
-#define MINPRESSURE 10
-#define MAXPRESSURE 1000
 
 // For better pressure precision, we need to know the resistance
 // between X+ and X- Use any multimeter to read it
 // For the one we're using, its 320 ohms across the X plate
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 320);
 
-// The control pins for the LCD can be assigned to any digital or
-// analog pins...but we'll use the analog pins as this allows us to
-// double up the pins with the touch screen (see the TFT paint example).
-#define LCD_CS A3         // Chip Select goes to Analog 3
-#define LCD_CD A2         // Command/Data goes to Analog 2
-#define LCD_WR A1         // LCD Write goes to Analog 1
-#define LCD_RD A0         // LCD Read goes to Analog 0
-#define LCD_RESET A4      // Normally A4, but can alternately just connect to Arduino's reset pin
 
-// Assign human-readable names to some common 16-bit color values:
-// http://www.barth-dev.de/online/rgb565-color-picker/
-#define	BLACK   0x0000
-#define	BLUE    0x001F
-#define	RED     0xF800
-#define	GREEN   0x07E0
-#define CYAN    0x07FF
-#define MAGENTA 0xF81F
-#define YELLOW  0xFFE0
-#define WHITE   0xFFFF
-#define GREY    0xD69A
-#define GREYY   0xAD55 
 
 //now declare tft item
 MCUFRIEND_kbv tft;    //we use a DRIVER IC ILI9341
  
-
-/* --- Speaker --- */
-//pin setup for speaker
-#define BuzzerPin A10
+// speaker variables
 boolean BuzzerEnabled;      //1= Buzzer on, 0= Buzzer off => can be modified via TFT interface
 int Buzzer_EEPROMaddr = 1;  // address to store this value in long term memory (EEPROM)
 
 
-/* --- RGB LED --- */
-#define LEDgnd A11
-#define LEDg A12
-#define LEDr A13
-#define LEDb A14
+// led variables
 boolean LEDenabled = 1;     //1= LED on, 0= LED off. Will also declare pins for output if turned on.
 
 

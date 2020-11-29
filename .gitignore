@@ -3,6 +3,9 @@
 # arduino build dir
 build/
 
+# emacs backup files
+*~
+
 # Prerequisites
 *.d
 

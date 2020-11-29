@@ -1,3 +1,3 @@
 #/bin/sh
 
-arduino-cli compile --fqbn arduino:avr:mega && arduino-cli upload -v --fqbn arduino:avr:mega --port /dev/ttyUSB0 && screen /dev/ttyUSB0 9600
+arduino-cli compile --fqbn arduino:avr:mega && arduino-cli upload -v --fqbn arduino:avr:mega --port /dev/ttyACM0 && screen /dev/ttyACM0 9600
