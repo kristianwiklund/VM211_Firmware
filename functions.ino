@@ -5,6 +5,7 @@ BootScreen bootscreen;
 InfoScreen infoscreen;
 CO2Screen co2screen;
 TVOCScreen tvocscreen;
+TempScreen tempscreen;
 
 /***************************************/
 /* ------------ FUNCTIONS ------------ */
@@ -407,113 +408,8 @@ void showScreen(int screenNr)
 
     //Temperature screen
   case 4:
-        //print value, icon & update LED
-        tft.setFont();  //standard system font
-        tft.setTextSize(3);
-        tft.setCursor(140, 120);
-        if(TEMP_BME280 < 0)
-        {
-          tft.setTextColor(GREY,BLACK);
-          showbgd(10, 75, temperature_100x77, 100, 77, GREY, BLACK);
-          controlLED('W');
-          controlLogo(GREY);
-        }
-        else if (TEMP_BME280 <= 18)
-        {
-          tft.setTextColor(BLUE,BLACK);
-          showbgd(10, 75, temperature_100x77, 100, 77, BLUE, BLACK);
-          controlLED('B');
-          controlLogo(BLUE);
-        }
-        else if ((TEMP_BME280 > 18) && (TEMP_BME280 <= 24))
-        {
-          tft.setTextColor(GREEN,BLACK);
-          showbgd(10, 75, temperature_100x77, 100, 77, GREEN, BLACK);
-          controlLED('G');
-          controlLogo(GREEN);
-        }
-        else if ((TEMP_BME280 > 24) && (TEMP_BME280 <= 30))
-        {
-          tft.setTextColor(YELLOW,BLACK);
-          showbgd(10, 75, temperature_100x77, 100, 77, YELLOW, BLACK);
-          controlLED('Y');
-          controlLogo(YELLOW);
-        }
-        else if (TEMP_BME280 > 30)
-        {
-          tft.setTextColor(RED,BLACK);
-          showbgd(10, 75, temperature_100x77, 100, 77, RED, BLACK);
-          controlLED('R');
-          controlLogo(RED);
-        }
-
-        if(MetricON)
-        {
-           if(TEMP_BME280 < 10){   tft.print(" ");  }     //add leading spaces
-           tft.print(TEMP_BME280,1);
-           tft.print(" ");
-           tft.print((char)247); //to print the ° symbol
-           tft.println("C");
-        }
-        else
-        {
-           float TEMP_BME280_F = ((TEMP_BME280 * 9)/5 + 32);
-           if(TEMP_BME280_F < 10){   tft.print(" ");  }     //add leading spaces
-           tft.print(TEMP_BME280_F,1);
-           tft.print(" ");
-           tft.print((char)247); //to print the ° symbol
-           tft.println("F");
-        }
-        
-        
-        /*
-        //print scale with fillRect(startX, startY, width, height, color)
-        tft.fillRect( 10, 175, 33, 18, GREY);
-        tft.fillRect( 44, 175,122, 18, BLUE);
-        tft.fillRect(167, 175, 39, 18, GREEN);
-        tft.fillRect(207, 175, 39, 18, YELLOW);
-        tft.fillRect(247, 175, 63, 18, RED);
-        */
-
-        //print scale from bitmap file - file is 1 line, so print it 18 times
-        for( int zz = 0; zz < 18; zz++)
-        {
-          tft.setAddrWindow(startXimg, startYimg + zz, startXimg + widthImg - 1, startYimg + zz + heightImg - 1);
-          tft.pushColors((const uint8_t*)temp_graph_300x1, widthImg * heightImg, 1, false);
-        }
-        tft.fillRect( 10,193,300, 6, BLACK);  //erase the bottom under the scale (from previous indicator)
-        //draw indicator with drawLine(startX, startY, endX, endY, color)
-        //calcVal = ( ( (TEMP_BME280+5) / (40+5) ) * 300 ) + 10;
-        calcVal = TEMP_BME280 + 5;
-        calcVal = calcVal / (40+5);
-        calcVal = calcVal * 300;
-        calcVal = calcVal + 10;    
-        Xindic = (int) calcVal;
-        if(Xindic < 10){Xindic = 10;}
-        else if(Xindic > 300){Xindic = 300;}
-        tft.drawLine(Xindic, 175, Xindic, 198, WHITE);
-        //print values of scale
-        tft.setTextSize(1); 
-
-        if(MetricON)
-        {
-          tft.setCursor(10, 165); tft.setTextColor(GREY,BLACK); tft.print("-5");
-          tft.setCursor(45, 165); tft.setTextColor(BLUE,BLACK); tft.print("0");
-          tft.setCursor(167, 165); tft.setTextColor(GREEN,BLACK); tft.print("19");
-          tft.setCursor(207, 165); tft.setTextColor(YELLOW,BLACK); tft.print("25");
-          tft.setCursor(248, 165); tft.setTextColor(RED,BLACK); tft.print("31");
-          tft.setCursor(295, 165); tft.setTextColor(RED,BLACK); tft.print("40"); 
-        }
-        else
-        {
-          tft.setCursor(10, 165); tft.setTextColor(GREY,BLACK); tft.print("23");
-          tft.setCursor(45, 165); tft.setTextColor(BLUE,BLACK); tft.print("32");
-          tft.setCursor(167, 165); tft.setTextColor(GREEN,BLACK); tft.print("66");
-          tft.setCursor(207, 165); tft.setTextColor(YELLOW,BLACK); tft.print("77");
-          tft.setCursor(248, 165); tft.setTextColor(RED,BLACK); tft.print("88");
-          tft.setCursor(295, 165); tft.setTextColor(RED,BLACK); tft.print("104"); 
-        }
-        break; 
+    tempscreen.draw();
+    break; 
 
       
       //Pressure screen

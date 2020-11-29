@@ -232,6 +232,7 @@ void setup(void)
     Serial.println("BME280 Sensor connection successful!");
     tft.setTextColor(GREEN); 
     tft.print("DETECTED");
+    tempscreen.setEnabled(true);
   }
   myBME280.setFilter(1); //0 to 4 is valid. Filter coefficient. See 3.4.4
   myBME280.setStandbyTime(0); //0 to 7 valid. Time between readings. See table 27.

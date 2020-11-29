@@ -42,4 +42,11 @@ public:
   bool draw();
 };
 
+class TempScreen : public Screen {
+
+public:
+  TempScreen();
+  bool draw();
+};
+
 
