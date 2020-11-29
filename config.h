@@ -5,7 +5,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define WITH_CLOCK
 #define WITH_ESP01 // for wifi
 
 
