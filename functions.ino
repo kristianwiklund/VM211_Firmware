@@ -2,6 +2,7 @@
 #include "screens.h"
 
 BootScreen bootscreen;
+InfoScreen infoscreen;
 
 /***************************************/
 /* ------------ FUNCTIONS ------------ */
@@ -296,16 +297,8 @@ void showScreen(int screenNr)
       
       //Info screen
       case 1:
-        //print icons
-        showbgd(40, 72, eCO2_65x50, 65, 50, WHITE, BLACK);
-        showbgd(127, 72, temperature_65x50, 65, 50, WHITE, BLACK);
-        showbgd(214, 72, pressure_65x50, 65, 50, WHITE, BLACK);
-        showbgd(40, 148, tvoc_65x50, 65, 50, WHITE, BLACK);
-        showbgd(127, 148, humidity_65x50, 65, 50, WHITE, BLACK);
-        showbgd(214, 148, lightning_65x50, 65, 50, WHITE, BLACK);
-        //print values from sensors
-        printValues();
-        break;
+	infoscreen.draw();
+	break;
 
       //Setup screen
       case 2:

@@ -12,7 +12,7 @@
 #include "src/MCUFRIEND_kbv/MCUFRIEND_kbv.h"           	  // TFT library by David Prentice
 extern MCUFRIEND_kbv tft; 
 
-// ----- 8< --- code --- 8< -----
+// ----- 8< --- Base class --- 8< -----
 
 bool Screen::isEnabled() {
   return isenabled;
@@ -29,7 +29,7 @@ bool Screen::draw() {
   return isenabled;
 };
 
-// ----- 8< --- code --- 8< -----
+// ----- 8< --- Bootscreen --- 8< -----
 
 BootScreen::BootScreen() {
   setEnabled(true); // boot screen is always visible
@@ -73,3 +73,26 @@ bool BootScreen::draw() {
     return (true);
   }
 
+// ----- 8< --- Infoscreen --- 8< -----
+
+InfoScreen::InfoScreen() {
+  setEnabled(true); // boot screen is always visible
+}
+
+bool InfoScreen::draw() {
+
+  if(!Screen::draw())
+    return;
+  
+  //print icons
+  showbgd(40, 72, eCO2_65x50, 65, 50, WHITE, BLACK);
+  showbgd(127, 72, temperature_65x50, 65, 50, WHITE, BLACK);
+  showbgd(214, 72, pressure_65x50, 65, 50, WHITE, BLACK);
+  showbgd(40, 148, tvoc_65x50, 65, 50, WHITE, BLACK);
+  showbgd(127, 148, humidity_65x50, 65, 50, WHITE, BLACK);
+  showbgd(214, 148, lightning_65x50, 65, 50, WHITE, BLACK);
+  //print values from sensors
+  printValues();
+
+  return (true);
+}

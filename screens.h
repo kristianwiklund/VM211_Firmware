@@ -21,4 +21,11 @@ public:
   bool draw();
 };
 
+class InfoScreen : public Screen {
+
+public:
+  InfoScreen();
+  bool draw();
+};
+
 
