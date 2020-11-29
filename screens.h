@@ -8,14 +8,17 @@ class Screen {
   
 public:
 
-  bool isEnabled();   
-  void draw();
+  bool isEnabled();
+  void setEnabled(bool);
+  bool draw();
   
 };
 
 class BootScreen : public Screen {
+
 public:
-  void draw();
+  BootScreen();
+  bool draw();
 };
 
 

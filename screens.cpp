@@ -3,9 +3,7 @@
 #include "screens.h"
 #include "config.h"
 #include "functions.h"
-#include "bitmaps.h"
-
-// bitmap prototypes
+#include "bitmaps.h" // yes - this is included twice for now, once here and once in the main. Remove once all code is here!
 
 
 // graphics includes
@@ -20,15 +18,28 @@ bool Screen::isEnabled() {
   return isenabled;
 }
 
+void Screen::setEnabled(bool x) {
+  isenabled = x;
+}
+
 // draw the screen contents
-void Screen::draw() {
+bool Screen::draw() {
+  // do something
+  // return false if we are not supposed to draw this screen
+  return isenabled;
 };
 
 // ----- 8< --- code --- 8< -----
 
-void BootScreen::draw() {
+BootScreen::BootScreen() {
+  setEnabled(true); // boot screen is always visible
+}
 
-    Screen::draw();
+bool BootScreen::draw() {
+
+  if(!Screen::draw())
+    return;
+  
     //print logo Velleman
     controlLogo(GREYY);
     //print logo EarthListener
@@ -58,5 +69,7 @@ void BootScreen::draw() {
     tft.fillRect(0,65,320,175,BLACK);
     controlLED('0');
 
+    // yes, draw this one
+    return (true);
   }
 
