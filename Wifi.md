@@ -8,3 +8,5 @@ Instructions for flashing is available in the WiFiEspAT README.
 
 You need to connect the ESP01 to the Arduino through a level converter. You also need a 3.3V regulator connected to the 5V rail on the arduino,
 the 3.3V arduino power is not good enough. 
+
+The Wifi credentials are not set in the VM211 sketch, use the tools/setuppersistentwificonnection example from wifiespat to do that.
