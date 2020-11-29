@@ -28,8 +28,10 @@ String SWversion = "v4.0";
 #include "bitmaps.h"                            			    // Icon library (local, hence the "")
 #include "src/RTClib/RTClib.h"                            // Adafruit RTC library 
 #include "config.h"                                       // instead of the magic numbers in the original code
-//#include "src/WiFiEspAT/src/WiFiEspAT.h"
+
+#ifdef WITH_ESP01
 #include <WiFiEspAT.h>
+#endif
 
 /* --- first boot --- */
 int firstBoot_EEPROMaddr = 5;   //EEPROM long term memory adress that we use to check if the EarthListener has been booted before (default will be true).
