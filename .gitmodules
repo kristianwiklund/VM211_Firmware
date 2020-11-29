@@ -1,0 +1,3 @@
+[submodule "src/WiFiEspAT"]
+	path = src/WiFiEspAT
+	url = https://github.com/jandrassy/WiFiEspAT.git
