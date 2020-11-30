@@ -30,8 +30,17 @@
 #include "config.h"                                       // instead of the magic numbers in the original code
 
 #ifdef WITH_ESP01
+
+#include <SPI.h>
 #include <WiFiEspAT.h>
+#include <PubSubClient.h>
+WiFiClient wificlient;
+bool wifienabled=false;
+PubSubClient client(wificlient);
+
 #endif
+
+
 
 /* --- first boot --- */
 int firstBoot_EEPROMaddr = 5;   //EEPROM long term memory adress that we use to check if the EarthListener has been booted before (default will be true).
@@ -166,6 +175,9 @@ int MetricON_EEPROMaddr = 2;  // address to store this value in long term memory
 /***************************************/
 void loop(void)
 {
+  // mqtt loop
+  client.loop();
+
   //timing: get time since boot: will write to global vars 
   getTimeSinceBoot();
 
@@ -184,6 +196,11 @@ void loop(void)
   //only do next code each second
   if(runSeconds != lastSecond)
   {
+#ifdef WITH_ESP01
+    if (wifienabled && !client.connected()) {
+      mqtt_reconnect();
+    }
+#endif
         //increase the secondCounter
         secondCounter++;
         

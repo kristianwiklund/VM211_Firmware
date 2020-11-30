@@ -19,8 +19,10 @@ void setup(void)
   Serial.println("----------------------------------");
   Serial.println();
 
-
-
+#ifdef WITH_ESP01  
+  network_setup();
+#endif
+  
   /* --- LCD screen feedback --- */
   Serial.println("***LCD screen feedback***");
   Serial.println(F("TFT LCD test"));
