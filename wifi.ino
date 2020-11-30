@@ -20,7 +20,7 @@ void mqtt_reconnect() {
   if (client.connect("arduinoClient")) {
     Serial.println("connected");
     // Once connected, publish an announcement...
-    client.publish("outTopic","hello world");
+    client.publish("vm211/status","online");
     // ... and resubscribe
     client.subscribe("inTopic");
   } else {
@@ -32,6 +32,29 @@ void mqtt_reconnect() {
   
 }
 
+// convenience function
+char *f2mqtt(char *t, float v) {
+  char s[50];
+
+#ifdef WITH_ESP01
+    if (wifienabled && client.connected()) {
+      dtostrf(v,3,1,s);
+      client.publish(t,s);
+    }
+#endif
+
+}
+
+char *i2mqtt(char *t, int v) {
+  char s[50];
+
+#ifdef WITH_ESP01
+    if (wifienabled && client.connected()) {
+      client.publish(t,itoa(v,s,10));
+    }
+#endif
+
+}
 
 void network_setup() {
 
@@ -67,5 +90,7 @@ void network_setup() {
   client.setServer(MQTT_HOST, 1883);
   client.setCallback(mqtt_callback);
 
-  
+  // and connect
+
+  mqtt_reconnect();
 }

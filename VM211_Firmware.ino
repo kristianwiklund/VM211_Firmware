@@ -154,7 +154,7 @@ int runMinutes;
 int runSeconds;
 int lastSecond = 99;        //we set this value so we can know when we just booted
 int secondCounter = 0;      //counter to calculate the number of seconds that have been passed between loggings
-int loggingInterval = 10;   //interval to log the values to the SD card. Default: 10, min: 1, maximum: 3600 (1 hour)
+int loggingInterval = LOGGING_INTERVAL;   //interval to log the values to the SD card. Default: 10, min: 1, maximum: 3600 (1 hour)
 
 
 /* --- menus --- */
@@ -168,6 +168,7 @@ unsigned long timeStartSlide = 0;     //time when slide was first shown;
 /* --- metric / imperial switch --- */
 boolean MetricON;  //boolean to check if values of temperature and lightning distance are set in Celsius/km or Fahrenheit/miles => can be modified via TFT interface
 int MetricON_EEPROMaddr = 2;  // address to store this value in long term memory (EEPROM)
+
 
 
 /***************************************/
@@ -223,6 +224,7 @@ void loop(void)
         TEMP_BME280 = myBME280.readTempC();
         //compensate temp & humi data
         TEMP_BME280 = TEMP_BME280 + TEMP_comp;
+	
         if(HUMIDITY_BME280 <= (100 - HUMI_comp))  //make sure we don't have values > 100%
         {
           HUMIDITY_BME280 = HUMIDITY_BME280 + HUMI_comp;
@@ -289,44 +291,59 @@ void loop(void)
           dataString += ",";
           dataString += TVOC;
         }
-    
-        //write dataString to SD (if SD card is present & we have passed the interval to log)
-        if(SDpresent && secondCounter >= loggingInterval)
-        {
-          secondCounter = 0;
-          File dataFile = SD.open(logFileName, FILE_WRITE);
-          // open the file. note that only one file can be open at a time,
-          // so you have to close this one before opening another.
+
+	if (secondCounter >= loggingInterval) {
+	  secondCounter = 0;
+	  String x="";
+	  // to mqtt
+	  if(wifienabled && client.connected()) {
+	    f2mqtt("vm211/humidity",HUMIDITY_BME280);
+	    f2mqtt("vm211/pressure",AMBIENTPRESSURE_BME280_c);
+	    f2mqtt("vm211/altitude",ALTITUDE_BME280);
+	    f2mqtt("vm211/temperature",TEMP_BME280);
+	    f2mqtt("vm211/co2", CO2);
+	    f2mqtt("vm211/tvoc", TVOC);
+
+		   
+	  }
+	  
+	  //write dataString to SD (if SD card is present & we have passed the interval to log)
+	  if(SDpresent)
+	    {
+
+	      File dataFile = SD.open(logFileName, FILE_WRITE);
+	      // open the file. note that only one file can be open at a time,
+	      // so you have to close this one before opening another.
            
-          // if the file is available, write to it:
-          if (dataFile) 
-          {
-            if(!logFileExists)  //the logfile didn't exist, so first print headers
-            {
-              Serial.print("Logfile '");
-              Serial.print(logFileName);
-              Serial.println("' did not exist, so print titles first..."); 
-              dataFile.println("Time since boot [DD HH:MM:SS],Temperature [°C],Humidity [%],Pressure [mBar],Altitude [m],eCO2 [ppm],TVOC [ppb]");
-              logFileExists = 1;
-            }
-            dataFile.println(dataString);
-            dataFile.close();
+	      // if the file is available, write to it:
+	      if (dataFile) 
+		{
+		  if(!logFileExists)  //the logfile didn't exist, so first print headers
+		    {
+		      Serial.print("Logfile '");
+		      Serial.print(logFileName);
+		      Serial.println("' did not exist, so print titles first..."); 
+		      dataFile.println("Time since boot [DD HH:MM:SS],Temperature [°C],Humidity [%],Pressure [mBar],Altitude [m],eCO2 [ppm],TVOC [ppb]");
+		      logFileExists = 1;
+		    }
+		  dataFile.println(dataString);
+		  dataFile.close();
 
-            // print to the serial port too:
-            Serial.print("Written to file ");
-            Serial.print(logFileName);
-            Serial.print(" on SD card: ");
-            Serial.println(dataString);
-          }
-          // if the file isn't open, pop up an error:
-          else 
-          {
-            Serial.print("Error opening file ");
-            Serial.print(logFileName);
-            Serial.println(" on SD card! No data logged.");
-          }
-        }
-
+		  // print to the serial port too:
+		  Serial.print("Written to file ");
+		  Serial.print(logFileName);
+		  Serial.print(" on SD card: ");
+		  Serial.println(dataString);
+		}
+	      // if the file isn't open, pop up an error:
+	      else 
+		{
+		  Serial.print("Error opening file ");
+		  Serial.print(logFileName);
+		  Serial.println(" on SD card! No data logged.");
+		}
+	    }
+	}
 
         /****show screens****/
         //interrupt from lightning sensor! -> show lightning screen, otherwise show info screen

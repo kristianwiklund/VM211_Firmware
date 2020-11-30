@@ -5,10 +5,14 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// default interval to log to SDCARD and mqtt
+#define LOGGING_INTERVAL 300 // every 5 minutes, the 10 seconds in original is crazy often
+
 #define WITH_ESP01 // for wifi
 #define MQTT_HOST "10.168.0.194"
 
 #define INITIAL_SLIDESHOW_STATUS 1 // change to 0 to not run slideshow from start. Using the slideshow from start will show the config screens, before getting into the loop correctly.
+
 
 // display positioning
 #define startXimg 10
