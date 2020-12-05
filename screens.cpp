@@ -4,6 +4,7 @@
 #include "config.h"
 #include "functions.h"
 #include "bitmaps.h" // yes - this is included twice for now, once here and once in the main. Remove once all code is here!
+#include "vccs811.h"
 
 // external globals
 
@@ -103,7 +104,6 @@ bool InfoScreen::draw() {
 
 // ----- 8< --- CO2 screen --- 8< -----
 
-extern int CO2;
 
 CO2Screen::CO2Screen() {
   // nothing to see
@@ -191,8 +191,6 @@ bool CO2Screen::draw() {
 }
 
 // ----- 8< --- TVOC screen --- 8< -----
-
-extern int TVOC;
 
 TVOCScreen::TVOCScreen() {
   // nothing to see

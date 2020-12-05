@@ -1,0 +1,39 @@
+    if (myCCS811.checkForStatusError())
+      {
+	Serial.println("CCS811 FUBAR");
+	tft.fillRect(0,55,320,185,BLACK);  //clear part of the screen (startX, startY, width, height, color)
+	printSensorError();
+	delay(2000); //keep this info on screen for 2 seconds
+	tft.fillScreen(BLACK); //clear screen for next run
+      }
+    else if (myCCS811.dataAvailable())
+      {
+	//Pass the temperature & humidity from BME280 sensor back into the CCS811 to compensate
+	updateCCS811vars(TEMP_BME280,HUMIDITY_BME280);
+	//read data from CCS811
+	myCCS811.readAlgorithmResults(); //Calling this function updates the global tVOC and CO2 variables
+	
+	CO2 = myCCS811.getCO2();
+	TVOC = myCCS811.getTVOC();
+	
+	//print data from CCS811 to serial
+        
+	Serial.print("CCS811   data:");
+	Serial.print(" eCO²: ");
+	Serial.print(CO2);
+	Serial.print("ppm");
+	Serial.print("     TVOC: ");
+	Serial.print(TVOC);
+	Serial.println("ppb");
+        
+        
+	//add data to dataString to write to SD
+	dataString += CO2;
+	dataString += ",";
+	dataString += TVOC;
+      }
+    else
+      Serial.println("No data no fun for CCS811");
+    
+
+

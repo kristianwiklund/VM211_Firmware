@@ -14,6 +14,7 @@
 #include <Wire.h>                               // Wire library
 #include <SPI.h>                                // SPI library
 #include <EEPROM.h>                             // Library to read & store info in EEPROM long term memory
+#include "vccs811.h"
 
 /* --- Local Libraries --- */
 #include "src/Adafruit-GFX-Library/Adafruit_GFX.h"     	  // Core graphics library by Adafruit
@@ -21,8 +22,6 @@
 #include "src/MCUFRIEND_kbv/MCUFRIEND_kbv.h"           	  // TFT library by David Prentice
 #include "src/SDmega/SDmega.h"                          	// SD library (mod by PSI to work with MEGA & TFT SD card shield)
 #include "src/SparkFun_BME280/src/SparkFunBME280.h"    	  // BME280 library by SparkFun
-//#include "src/SparkFun_CCS811/src/SparkFunCCS811.h"    	  // CCS811 library by SparkFun
-#include <SparkFunCCS811.h>
 #include "src/SparkFun_AS3935/src/SparkFun_AS3935.h"          // AS3935 library by SparkFun
 #include "src/TFTLCD-Library/Adafruit_TFTLCD.h"        	  // Hardware-specific library for TFT screen by Adafruit
 #include "src/TouchScreen/TouchScreen.h"               	  // TouchScreen library by Adafruit
@@ -47,12 +46,11 @@ PubSubClient client(wificlient);
 int firstBoot_EEPROMaddr = 5;   //EEPROM long term memory adress that we use to check if the EarthListener has been booted before (default will be true).
 
 
-/* --- CCS811 sensor --- */
-#define CCS811_ADDR 0x5B      //Default I2C Address of CCS811 sensor (secondary Address is 0x5A if jumper is closed)
-CCS811 myCCS811(CCS811_ADDR);
-int CO2;
-int TVOC;
+// CCS811
 
+uint16_t CO2=0;
+uint16_t TVOC=0;
+CCS811 myCCS811(CCS811_ADDR);
 
 /* --- BME280 air sensor --- */
 #define BME280_ADDR 0x77      //Default I2C Address of BME280 sensor, can be 0x76 if jumper closed
@@ -200,88 +198,63 @@ void loop(void)
   //  Serial.println(secondCounter);
   // only update measurements every UPDATE_INTERVAL if we are past "logginginterval"
   if (secondCounter > UPDATE_INTERVAL) {
-
+    Serial.println("Updating sensors");
 
 #ifdef WITH_ESP01
     if (wifienabled && !client.connected()) {
       mqtt_reconnect();
     }
 #endif
-        //increase the secondCounter
+    //increase the secondCounter
+    
+    
+    /****** poll sensors & update vars + log to SD *****/
+    // make a string for assembling the data to log on the SD card & add the current time:
+    
+    char buf[17];
+    sprintf(buf,"%02d %02d:%02d:%02d",runDays,runHours,runMinutes,runSeconds);
+    dataString = buf;
+    dataString += ",";
+    
+    //calculate minutes between current time & time when AS3935sensor was triggered
+    minutesSinceAS3935Trigger = returnMinutes(millis() - AS3935IrqTriggeredTime);
+    
+    //read data from BME280
+    HUMIDITY_BME280 = myBME280.readFloatHumidity();
+    AMBIENTPRESSURE_BME280 = myBME280.readFloatPressure();
+    AMBIENTPRESSURE_BME280_c = AMBIENTPRESSURE_BME280 / 100; //convert Pa to mBar
+    ALTITUDE_BME280 = myBME280.readFloatAltitudeMeters();
+    TEMP_BME280 = myBME280.readTempC();
+    //compensate temp & humi data
+    TEMP_BME280 = TEMP_BME280 + TEMP_comp;
+    
+    if(HUMIDITY_BME280 <= (100 - HUMI_comp))  //make sure we don't have values > 100%
+      {
+	HUMIDITY_BME280 = HUMIDITY_BME280 + HUMI_comp;
+      }
+    
+    //add data to dataString to write to SD
+    dataString += TEMP_BME280,2;
+    dataString += ",";
+    dataString += HUMIDITY_BME280,2;
+    dataString += ",";
+    dataString += AMBIENTPRESSURE_BME280_c,2;
+    dataString += ",";
+    dataString += ALTITUDE_BME280,2;
+    dataString += ",";
+    
+    //read data from CCS811 (or show error)
 
-        
-        /****** poll sensors & update vars + log to SD *****/
-        // make a string for assembling the data to log on the SD card & add the current time:
-
-        char buf[17];
-        sprintf(buf,"%02d %02d:%02d:%02d",runDays,runHours,runMinutes,runSeconds);
-        dataString = buf;
-        dataString += ",";
-
-        //calculate minutes between current time & time when AS3935sensor was triggered
-        minutesSinceAS3935Trigger = returnMinutes(millis() - AS3935IrqTriggeredTime);
-        
-        //read data from BME280
-        HUMIDITY_BME280 = myBME280.readFloatHumidity();
-        AMBIENTPRESSURE_BME280 = myBME280.readFloatPressure();
-        AMBIENTPRESSURE_BME280_c = AMBIENTPRESSURE_BME280 / 100; //convert Pa to mBar
-        ALTITUDE_BME280 = myBME280.readFloatAltitudeMeters();
-        TEMP_BME280 = myBME280.readTempC();
-        //compensate temp & humi data
-        TEMP_BME280 = TEMP_BME280 + TEMP_comp;
-	
-        if(HUMIDITY_BME280 <= (100 - HUMI_comp))  //make sure we don't have values > 100%
-        {
-          HUMIDITY_BME280 = HUMIDITY_BME280 + HUMI_comp;
-        }
-        
-        //add data to dataString to write to SD
-        dataString += TEMP_BME280,2;
-        dataString += ",";
-        dataString += HUMIDITY_BME280,2;
-        dataString += ",";
-        dataString += AMBIENTPRESSURE_BME280_c,2;
-        dataString += ",";
-        dataString += ALTITUDE_BME280,2;
-        dataString += ",";
-
-        //read data from CCS811 (or show error)
-        if (myCCS811.checkForStatusError())
-        {
-          tft.fillRect(0,55,320,185,BLACK);  //clear part of the screen (startX, startY, width, height, color)
-          printSensorError();
-          delay(2000); //keep this info on screen for 2 seconds
-          tft.fillScreen(BLACK); //clear screen for next run
-        }
-        else if (myCCS811.dataAvailable())
-        {
-          //Pass the temperature & humidity from BME280 sensor back into the CCS811 to compensate
-	  updateCCS811vars(TEMP_BME280,HUMIDITY_BME280);
-          //read data from CCS811
-          myCCS811.readAlgorithmResults(); //Calling this function updates the global tVOC and CO2 variables
-          CO2 = myCCS811.getCO2();
-          TVOC = myCCS811.getTVOC();
-
-          //print data from CCS811 to serial
-          /*
-          Serial.print("CCS811   data:");
-          Serial.print(" eCO²: ");
-          Serial.print(CO2);
-          Serial.print("ppm");
-          Serial.print("     TVOC: ");
-          Serial.print(TVOC);
-          Serial.println("ppb");
-          */
-          
-          //add data to dataString to write to SD
-          dataString += CO2;
-          dataString += ",";
-          dataString += TVOC;
-        }
-      secondCounter = 0;
-      readCounter++;
+    ccs811_loop();
+    //add data to dataString to write to SD
+    // assumes that we have data btw.
+    dataString += CO2;
+    dataString += ",";
+    dataString += TVOC;
+    
+    secondCounter = 0;
+    readCounter++;
   }
-
   if (readCounter > LOGGING_INTERVAL) {
     String x="";
     // to mqtt

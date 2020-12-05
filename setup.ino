@@ -3,7 +3,7 @@
 /***************************************/
 
 #include "config.h"
-
+#include "vccs811.h"
 
 void setup(void)
 {
@@ -113,12 +113,7 @@ void setup(void)
 
 
   /* --- CCS811 sensor feedback --- */
-  Wire.begin(); // Begin Wire before CCS811 sensor. 
-  Serial.println("***CCS811 sensor***");
-  CCS811Core::CCS811_Status_e returnCode = myCCS811.beginCore(Wire);
-  Serial.print("CCS811 begin exited with: ");
-  printDriverError( returnCode );
-  Serial.println();
+  ccs811_setup();
 
 
   /* --- AS3935 sensor feedback --- */

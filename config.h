@@ -32,6 +32,10 @@
 
 
 // - from original vmm_...ino file, should normally not be touched!
+
+#define CCS811_ADDR 0x5B //Default I2C Address
+
+
 /* --- LCD panel with touch --- */
 //be aware we use the TFT LCD on a Arduino Mega
 #define YP A3  // must be an analog pin, use "An" notation!

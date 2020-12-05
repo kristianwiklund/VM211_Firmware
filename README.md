@@ -40,6 +40,9 @@ The alarm clock functionality is built around two main components:
 -------------------------------------------------------
 
 Change log v4.0.2.kw
+- refactored the CCS811 code in an attempt to get the correct readings (this was started in the previous change). Code moved to separate c++ file.
+
+Change log v4.0.2.kw
 - move from included CCS811 to use sparkfun's latest, install with arduino-cli lib install "sparkfun ccs811 arduino library"@2.0.1, I'm assuming that those who do this mod are competent to install libraries themselves
 - changed the sensor read frequency to a less hysterical 10 seconds (configurable)
 

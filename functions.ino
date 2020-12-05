@@ -1,5 +1,7 @@
 #include "config.h"
+#include "vccs811.h"
 #include "screens.h"
+
 
 BootScreen bootscreen;
 InfoScreen infoscreen;
@@ -85,54 +87,6 @@ void Print_Level(int data1) {
 }
 
 
-//printDriverError decodes the CCS811Core::status type and prints the
-//type of error to the serial terminal.
-//
-//Save the return value of any function of type CCS811Core::status, then pass
-//to this function to see what the output was.
-void printDriverError( CCS811Core::CCS811_Status_e errorCode )
-{
-  tft.setCursor(15, 105);
-  tft.setTextColor(WHITE); 
-  tft.setTextSize(2);
-
-  tft.print("CCS811 status: ");
-
-  switch ( errorCode )
-  {
-    case CCS811Core::CCS811_Stat_SUCCESS:
-      Serial.print("SUCCESS");
-      tft.setTextColor(GREEN); 
-      tft.print("DETECTED");
-      co2screen.setEnabled(true);
-      tvocscreen.setEnabled(true);
-      break;
-    case CCS811Core::CCS811_Stat_ID_ERROR:
-      Serial.print("ID_ERROR");
-      tft.setTextColor(RED); 
-      tft.print("ID_ERROR");
-      break;
-    case CCS811Core::CCS811_Stat_I2C_ERROR:
-      Serial.print("I2C_ERROR");
-      tft.setTextColor(RED); 
-      tft.print("I2C_ERROR");
-      break;
-    case CCS811Core::CCS811_Stat_INTERNAL_ERROR:
-      Serial.print("INTERNAL_ERROR");
-      tft.setTextColor(RED); 
-      tft.print("INTERNAL_ERROR");
-      break;
-    case CCS811Core::CCS811_Stat_GENERIC_ERROR:
-      Serial.print("GENERIC_ERROR");
-      tft.setTextColor(RED); 
-      tft.print("GENERIC_ERROR");
-      break;
-    default:
-      Serial.print("Unspecified error.");
-      tft.setTextColor(RED); 
-      tft.print("Unspecified error.");
-  }
-}
 
 
 //printSensorError gets, clears, then prints the errors
