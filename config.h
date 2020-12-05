@@ -6,7 +6,8 @@
 #define CONFIG_H
 
 // default interval to log to SDCARD and mqtt
-#define LOGGING_INTERVAL 300 // every 5 minutes, the 10 seconds in original is crazy often
+#define UPDATE_INTERVAL 10 // update sensors every 10 seconds
+#define LOGGING_INTERVAL 30 // how many readings between logs? 10x30=300 = 5 minutes by default
 
 #define WITH_ESP01 // for wifi
 #define MQTT_HOST "10.168.0.194"

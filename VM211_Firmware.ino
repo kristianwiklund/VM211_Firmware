@@ -154,7 +154,8 @@ int runHours;
 int runMinutes;
 int runSeconds;
 int lastSecond = 99;        //we set this value so we can know when we just booted
-int secondCounter = 0;      //counter to calculate the number of seconds that have been passed between loggings
+int secondCounter = 0;      //counter to calculate the number of seconds that have been passed between reads
+int readCounter = 0; // count how many sensor reads have been done between loggings
 int loggingInterval = LOGGING_INTERVAL;   //interval to log the values to the SD card. Default: 10, min: 1, maximum: 3600 (1 hour)
 
 
@@ -177,6 +178,7 @@ int MetricON_EEPROMaddr = 2;  // address to store this value in long term memory
 /***************************************/
 void loop(void)
 {
+  String dataString = "";
   // mqtt loop
   client.loop();
 
@@ -195,20 +197,22 @@ void loop(void)
     }
   }
 
-  //only do next code each second
-  if(runSeconds != lastSecond)
-  {
+  //  Serial.println(secondCounter);
+  // only update measurements every UPDATE_INTERVAL if we are past "logginginterval"
+  if (secondCounter > UPDATE_INTERVAL) {
+
+
 #ifdef WITH_ESP01
     if (wifienabled && !client.connected()) {
       mqtt_reconnect();
     }
 #endif
         //increase the secondCounter
-        secondCounter++;
+
         
         /****** poll sensors & update vars + log to SD *****/
         // make a string for assembling the data to log on the SD card & add the current time:
-        String dataString = "";
+
         char buf[17];
         sprintf(buf,"%02d %02d:%02d:%02d",runDays,runHours,runMinutes,runSeconds);
         dataString = buf;
@@ -231,24 +235,6 @@ void loop(void)
           HUMIDITY_BME280 = HUMIDITY_BME280 + HUMI_comp;
         }
         
-        //print data from BME280 to serial
-        /*
-        Serial.print("BME280   data:");
-        Serial.print("                                 ");
-        Serial.print("Temp: ");
-        Serial.print( TEMP_BME280, 2);
-        Serial.print("°C");
-        Serial.print("     Humidity: ");
-        Serial.print(HUMIDITY_BME280, 2);
-        Serial.print("%");
-        Serial.print("     Pressure: ");
-        Serial.print( AMBIENTPRESSURE_BME280_c, 2);
-        Serial.print("mBar");
-        Serial.print("     Altitude: ");
-        Serial.print( ALTITUDE_BME280, 2);
-        Serial.println("m");
-        */
-        
         //add data to dataString to write to SD
         dataString += TEMP_BME280,2;
         dataString += ",";
@@ -270,7 +256,7 @@ void loop(void)
         else if (myCCS811.dataAvailable())
         {
           //Pass the temperature & humidity from BME280 sensor back into the CCS811 to compensate
-          updateCCS811vars(TEMP_BME280,HUMIDITY_BME280);
+	  updateCCS811vars(TEMP_BME280,HUMIDITY_BME280);
           //read data from CCS811
           myCCS811.readAlgorithmResults(); //Calling this function updates the global tVOC and CO2 variables
           CO2 = myCCS811.getCO2();
@@ -292,21 +278,23 @@ void loop(void)
           dataString += ",";
           dataString += TVOC;
         }
+      secondCounter = 0;
+      readCounter++;
+  }
 
-	if (secondCounter >= loggingInterval) {
-	  secondCounter = 0;
-	  String x="";
-	  // to mqtt
-	  if(wifienabled && client.connected()) {
-	    f2mqtt("vm211/humidity",HUMIDITY_BME280);
-	    f2mqtt("vm211/pressure",AMBIENTPRESSURE_BME280_c);
-	    f2mqtt("vm211/altitude",ALTITUDE_BME280);
-	    f2mqtt("vm211/temperature",TEMP_BME280);
-	    f2mqtt("vm211/co2", CO2);
-	    f2mqtt("vm211/tvoc", TVOC);
-
-		   
-	  }
+  if (readCounter > LOGGING_INTERVAL) {
+    String x="";
+    // to mqtt
+    if(wifienabled && client.connected()) {
+      f2mqtt("vm211/humidity",HUMIDITY_BME280);
+      f2mqtt("vm211/pressure",AMBIENTPRESSURE_BME280_c);
+      f2mqtt("vm211/altitude",ALTITUDE_BME280);
+      f2mqtt("vm211/temperature",TEMP_BME280);
+      f2mqtt("vm211/co2", CO2);
+      f2mqtt("vm211/tvoc", TVOC);
+      
+      readCounter = 0;
+    }
 	  
 	  //write dataString to SD (if SD card is present & we have passed the interval to log)
 	  if(SDpresent)
@@ -346,52 +334,56 @@ void loop(void)
 	    }
 	}
 
-        /****show screens****/
-        //interrupt from lightning sensor! -> show lightning screen, otherwise show info screen
-        //we only do this if AS3935_bootOK is true (otherwise noise from sensor)
-        if (AS3935IrqTriggered && AS3935_bootOK)
+  //only do next code every second
+  if(runSeconds != lastSecond)
+    {
+      secondCounter++;
+      /****show screens****/
+      //interrupt from lightning sensor! -> show lightning screen, otherwise show info screen
+      //we only do this if AS3935_bootOK is true (otherwise noise from sensor)
+      if (AS3935IrqTriggered && AS3935_bootOK)
         {
           Serial.println("Interrupt from lightning sensor");
           
           //check interrupt source
           delay(5); //wait so not to overflow the bus
           if(AS3935_SPI)
-          {
-            int_src = lightningSPI.readInterruptReg();
-          }else
-          {
-            int_src = lightningIIC.readInterruptReg();
-          }
+	    {
+	      int_src = lightningSPI.readInterruptReg();
+	    }else
+	    {
+	      int_src = lightningIIC.readInterruptReg();
+	    }
           
           showScreen(81);   //0:Boot, 1:Info screen, 2:Setup, 3:eCO², 4:Temperature 5:Pressure, 6:TVOC, 7:Humidity, 8:Lightning, 81:Lightning after interrupt
           AS3935IrqTriggered = 0;
         }
-        else
+      else
         {
           //check if slideshow is on
           if(slideShowPlaying)
-          { 
-            //automatically change the screen every time the slideshowTimer value has been reached
-            if( ( millis() - timeStartSlide ) > (slideshowTimer * 1000) )
-            {
+	    { 
+	      //automatically change the screen every time the slideshowTimer value has been reached
+	      if( ( millis() - timeStartSlide ) > (slideshowTimer * 1000) )
+		{
                   previousScreenNr = currentScreenNr;
 		  Serial.print("Changing screen ");
 		  Serial.print(currentScreenNr);
 		  currentScreenNr = getnewcurrentscreen(currentScreenNr);
-
-            }
-          }
+		  
+		}
+	    }
           
           //if a screen has been changed, reset the slide timer
           if(currentScreenNr != previousScreenNr)
-          {
-            timeStartSlide = millis();
-          }
+	    {
+	      timeStartSlide = millis();
+	    }
           showScreen(currentScreenNr);  //0:Boot, 1:Info screen, 2:Setup, 3:eCO², 4:Temperature 5:Pressure, 6:TVOC, 7:Humidity, 8:Lightning, 81:Lightning after interrupt
         }
-
+      
       
         //update lastSecond so this loop can only be run at the next second
-        lastSecond = runSeconds;
-  }
+      lastSecond = runSeconds;
+    }
 }
