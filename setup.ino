@@ -113,11 +113,11 @@ void setup(void)
 
 
   /* --- CCS811 sensor feedback --- */
+  Wire.begin(); // Begin Wire before CCS811 sensor. 
   Serial.println("***CCS811 sensor***");
-  CCS811Core::status returnCode = myCCS811.begin();
+  CCS811Core::CCS811_Status_e returnCode = myCCS811.beginCore(Wire);
   Serial.print("CCS811 begin exited with: ");
   printDriverError( returnCode );
-  Serial.println();
   Serial.println();
 
 
@@ -170,7 +170,7 @@ void setup(void)
     Serial.print(AS3935_ADD,HEX);
     Serial.println(", please wait...");
     
-    Wire.begin(); // Begin Wire before lightning sensor. 
+
     if( !lightningIIC.begin() ){ // Initialize the sensor. 
       AS3935_bootOK = false;
     }

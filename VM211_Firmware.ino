@@ -21,7 +21,8 @@
 #include "src/MCUFRIEND_kbv/MCUFRIEND_kbv.h"           	  // TFT library by David Prentice
 #include "src/SDmega/SDmega.h"                          	// SD library (mod by PSI to work with MEGA & TFT SD card shield)
 #include "src/SparkFun_BME280/src/SparkFunBME280.h"    	  // BME280 library by SparkFun
-#include "src/SparkFun_CCS811/src/SparkFunCCS811.h"    	  // CCS811 library by SparkFun
+//#include "src/SparkFun_CCS811/src/SparkFunCCS811.h"    	  // CCS811 library by SparkFun
+#include <SparkFunCCS811.h>
 #include "src/SparkFun_AS3935/src/SparkFun_AS3935.h"          // AS3935 library by SparkFun
 #include "src/TFTLCD-Library/Adafruit_TFTLCD.h"        	  // Hardware-specific library for TFT screen by Adafruit
 #include "src/TouchScreen/TouchScreen.h"               	  // TouchScreen library by Adafruit

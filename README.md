@@ -39,6 +39,9 @@ The alarm clock functionality is built around two main components:
 
 -------------------------------------------------------
 
+Change log v4.0.2.kw
+- move from included CCS811 to use sparkfun's latest, install with arduino-cli lib install "sparkfun ccs811 arduino library"@2.0.1, I'm assuming that those who do this mod are competent to install libraries themselves
+
 Change log v4.0.x.kw
 - Wifi feature, using ESP-01. 
 - Wifi feature connects to mqtt broker and transmits the measurements every 300 seconds. Topic vm211/# . Please note, currently, the mqtt feature do not check if the sensor exists before transmitting the value
