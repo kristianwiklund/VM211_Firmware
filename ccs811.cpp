@@ -5,7 +5,6 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-//#include <SparkFunCCS811.h> //Click here to get the library: http://librarymanager/All#SparkFun_CCS811
 #include <Adafruit_CCS811.h>
 #include "config.h"
 #include "screens.h"
