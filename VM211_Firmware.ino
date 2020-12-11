@@ -14,7 +14,7 @@
 #include <Wire.h>                               // Wire library
 #include <SPI.h>                                // SPI library
 #include <EEPROM.h>                             // Library to read & store info in EEPROM long term memory
-#include "vccs811.h"
+#include "ccs811.h"
 
 /* --- Local Libraries --- */
 #include "src/Adafruit-GFX-Library/Adafruit_GFX.h"     	  // Core graphics library by Adafruit
@@ -28,6 +28,7 @@
 #include "bitmaps.h"                            			    // Icon library (local, hence the "")
 #include "src/RTClib/RTClib.h"                            // Adafruit RTC library 
 #include "config.h"                                       // instead of the magic numbers in the original code
+#include <Adafruit_CCS811.h>
 
 #ifdef WITH_ESP01
 
@@ -50,7 +51,7 @@ int firstBoot_EEPROMaddr = 5;   //EEPROM long term memory adress that we use to 
 
 uint16_t CO2=0;
 uint16_t TVOC=0;
-CCS811 myCCS811(CCS811_ADDR);
+Adafruit_CCS811 myCCS811;
 
 /* --- BME280 air sensor --- */
 #define BME280_ADDR 0x77      //Default I2C Address of BME280 sensor, can be 0x76 if jumper closed

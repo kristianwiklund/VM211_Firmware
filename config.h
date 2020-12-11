@@ -1,6 +1,6 @@
 // configuration file to hold some basic constants to avoid magic numbers - refactoring work in progress
 
-#define SWversion "v4.0.2.kw"
+#define SWversion "v4.0.3.kw"
 
 #ifndef CONFIG_H
 #define CONFIG_H

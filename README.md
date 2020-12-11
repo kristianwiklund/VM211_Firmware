@@ -39,6 +39,9 @@ The alarm clock functionality is built around two main components:
 
 -------------------------------------------------------
 
+Change log v4.0.3.kw
+- Changed from Sparkfun CCS811 library to Adafruit CCS811 library because reason
+
 Change log v4.0.2.kw
 - refactored the CCS811 code in an attempt to get the correct readings. Code moved to separate c++ file.
 - move from included CCS811 to use sparkfun's latest, install with arduino-cli lib install "sparkfun ccs811 arduino library"@2.0.1, I'm assuming that those who do this mod are competent to install libraries themselves

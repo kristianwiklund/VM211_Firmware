@@ -1,5 +1,5 @@
 #include "config.h"
-#include "vccs811.h"
+#include "ccs811.h"
 #include "screens.h"
 
 
@@ -88,35 +88,6 @@ void Print_Level(int data1) {
 
 
 
-
-//printSensorError gets, clears, then prints the errors
-//saved within the error register.
-void printSensorError()
-{
-  Serial.println("Error with CCS811 sensor!");
-  uint8_t error = myCCS811.getErrorRegister();
-
-  tft.setCursor(15, 105);
-  tft.setTextColor(RED);  tft.setTextSize(2);
-  tft.println("Error with CCS811 sensor!");
-
-  if ( error == 0xFF ) //comm error
-  {
-    Serial.println("Failed to get ERROR_ID register.");
-    tft.println("Failed to get ERROR_ID register!:");
-  }
-  else
-  {
-    Serial.print("Error: ");
-    if (error & 1 << 5) Serial.print("HeaterSupply");     tft.println(" Error: HeaterSupply");
-    if (error & 1 << 4) Serial.print("HeaterFault");      tft.println(" Error: HeaterFault");
-    if (error & 1 << 3) Serial.print("MaxResistance");    tft.println(" Error: MaxResistance");
-    if (error & 1 << 2) Serial.print("MeasModeInvalid");  tft.println(" Error: MeasModeInvalid");
-    if (error & 1 << 1) Serial.print("ReadRegInvalid");   tft.println(" Error: ReadRegInvalid");
-    if (error & 1 << 0) Serial.print("MsgInvalid");       tft.println(" Error: MsgInvalid");
-    Serial.println();
-  }
-}
 
 
 //function to show red, green and blue pattern on screen

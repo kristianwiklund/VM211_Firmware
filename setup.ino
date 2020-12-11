@@ -3,7 +3,7 @@
 /***************************************/
 
 #include "config.h"
-#include "vccs811.h"
+#include "ccs811.h"
 
 void setup(void)
 {

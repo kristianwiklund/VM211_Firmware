@@ -5,7 +5,8 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <SparkFunCCS811.h> //Click here to get the library: http://librarymanager/All#SparkFun_CCS811
+//#include <SparkFunCCS811.h> //Click here to get the library: http://librarymanager/All#SparkFun_CCS811
+#include <Adafruit_CCS811.h>
 #include "config.h"
 #include "screens.h"
 
@@ -13,7 +14,7 @@
 extern MCUFRIEND_kbv tft;
 
 
-extern CCS811 myCCS811;
+extern Adafruit_CCS811 myCCS811;
 
 extern uint16_t CO2;
 extern uint16_t TVOC;
@@ -28,7 +29,7 @@ extern TVOCScreen tvocscreen;
 //Save the return value of any function of type CCS811Core::status, then pass
 //to this function to see what the output was.
 
-void printDriverError( CCS811Core::CCS811_Status_e errorCode )
+void drawCCS811status(bool error )
 {
   tft.setCursor(15, 105);
   tft.setTextColor(WHITE); 
@@ -36,17 +37,20 @@ void printDriverError( CCS811Core::CCS811_Status_e errorCode )
 
   tft.print("CCS811 status: ");
 
-  switch ( errorCode )
-  {
-    case CCS811Core::CCS811_Stat_SUCCESS:
+  if(!error) {
+      Serial.print("GENERIC_ERROR"); 
+      tft.setTextColor(RED); 
+      tft.print("ERROR");
+      co2screen.setEnabled(false);
+      tvocscreen.setEnabled(false);
+  }  else { 
       Serial.print("SUCCESS");
       tft.setTextColor(GREEN); 
       tft.print("DETECTED");
       co2screen.setEnabled(true);
       tvocscreen.setEnabled(true);
-      return (true);
-      break;
-    case CCS811Core::CCS811_Stat_ID_ERROR:
+  }
+   /* case CCS811Core::CCS811_Stat_ID_ERROR:
       Serial.print("ID_ERROR");
       tft.setTextColor(RED); 
       tft.print("ID_ERROR");
@@ -71,37 +75,36 @@ void printDriverError( CCS811Core::CCS811_Status_e errorCode )
       tft.setTextColor(RED); 
       tft.print("Unspecified error.");
   }
-  return false;
+  return false;*/
 }
 
 
 void ccs811_setup() {
-  CCS811Core::CCS811_Status_e returnCode;
+  bool status;
   Wire.begin(); //Inialize I2C Hardware
 
-  returnCode = myCCS811.beginCore(Wire);
-  Serial.print("CCS811 begin exited with: ");
-  printDriverError( returnCode );
-  Serial.println();
+  if(!(status = myCCS811.begin(CCS811_ADDR)))
+    return;
+
+  drawCCS811status(status);
   
-
-
-  return true;
+   while(!myCCS811.available())
+    Serial.println("ccs811...");
 }
 
 // read from ccs811 and update the two lovely globals
 void ccs811_loop()
 {
   //Check to see if data is ready with .dataAvailable()
-  if (myCCS811.dataAvailable())
+  if (myCCS811.available())
   {
     //If so, have the sensor read and calculate the results.
     //Get them later
-    myCCS811.readAlgorithmResults();
+    if(!(myCCS811.readData())) {
 
     Serial.print("CO2[");
     //Returns calculated CO2 reading
-    CO2 = myCCS811.getCO2();
+    CO2 = myCCS811.geteCO2();
     Serial.print(CO2);
     Serial.print("] tVOC[");
     //Returns calculated TVOC reading
@@ -112,6 +115,39 @@ void ccs811_loop()
     Serial.print(millis());
     Serial.print("]");
     Serial.println();
+    }
   }
 }
 
+
+#if 0
+//printSensorError gets, clears, then prints the errors
+//saved within the error register.
+void printSensorError()
+{
+  Serial.println("Error with CCS811 sensor!");
+  uint8_t error = myCCS811.getErrorRegister();
+
+  tft.setCursor(15, 105);
+  tft.setTextColor(RED);  tft.setTextSize(2);
+  tft.println("Error with CCS811 sensor!");
+
+  if ( error == 0xFF ) //comm error
+  {
+    Serial.println("Failed to get ERROR_ID register.");
+    tft.println("Failed to get ERROR_ID register!:");
+  }
+  else
+  {
+    Serial.print("Error: ");
+    if (error & 1 << 5) Serial.print("HeaterSupply");     tft.println(" Error: HeaterSupply");
+    if (error & 1 << 4) Serial.print("HeaterFault");      tft.println(" Error: HeaterFault");
+    if (error & 1 << 3) Serial.print("MaxResistance");    tft.println(" Error: MaxResistance");
+    if (error & 1 << 2) Serial.print("MeasModeInvalid");  tft.println(" Error: MeasModeInvalid");
+    if (error & 1 << 1) Serial.print("ReadRegInvalid");   tft.println(" Error: ReadRegInvalid");
+    if (error & 1 << 0) Serial.print("MsgInvalid");       tft.println(" Error: MsgInvalid");
+    Serial.println();
+  }
+}
+
+#endif

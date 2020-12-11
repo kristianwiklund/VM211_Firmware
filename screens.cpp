@@ -1,10 +1,12 @@
+
+
 #include <Arduino.h>
 #include <stdint.h>
 #include "screens.h"
 #include "config.h"
 #include "functions.h"
 #include "bitmaps.h" // yes - this is included twice for now, once here and once in the main. Remove once all code is here!
-#include "vccs811.h"
+#include "ccs811.h"
 
 // external globals
 
