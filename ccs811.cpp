@@ -21,6 +21,7 @@ extern uint16_t TVOC;
 extern CO2Screen co2screen;
 extern TVOCScreen tvocscreen;
 
+bool haveccs811=false;
 
 //printDriverError decodes the CCS811Core::status type and prints the
 //type of error to the serial terminal.
@@ -82,10 +83,14 @@ void ccs811_setup() {
   bool status;
   Wire.begin(); //Inialize I2C Hardware
 
-  if(!(status = myCCS811.begin(CCS811_ADDR)))
-    return;
+  status = myCCS811.begin(CCS811_ADDR);
+   
 
   drawCCS811status(status);
+  haveccs811=status;
+
+  if(!status)
+  return;
   
    while(!myCCS811.available())
     Serial.println("ccs811...");
@@ -94,6 +99,12 @@ void ccs811_setup() {
 // read from ccs811 and update the two lovely globals
 void ccs811_loop()
 {
+  if(!haveccs811) {
+      CO2=0;
+      TVOC=0;
+      
+    return;
+  }
   //Check to see if data is ready with .dataAvailable()
   if (myCCS811.available())
   {
