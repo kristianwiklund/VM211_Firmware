@@ -2,6 +2,7 @@
 #include <WiFiEspAT.h>
 #include <PubSubClient.h>
 
+void(* resetFunc) (void) = 0;
 
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -11,6 +12,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     Serial.print((char)payload[i]);
   }
   Serial.println();
+
+  // remove this - it is not good. needed for testing though...
+  if(!strcmp("reboot", payload))
+    resetFunc();
+    
 }
 
 void mqtt_reconnect() {
