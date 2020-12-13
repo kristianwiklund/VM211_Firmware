@@ -42,6 +42,45 @@ BootScreen::BootScreen() {
   setEnabled(true); // boot screen is always visible
 }
 
+// the boot screen is really useless in the original implementation.
+// the only thing it do is delay the startup
+// instead, we split it to two parts:
+// (1) setup of the graphics
+// (2) cycling of the colors. the cycling is currently done as part of the wifi setup
+
+void BootScreen::cycle() {
+  if(!isdrawn) {
+    draw();
+    isdrawn=true;
+  }
+
+  //cycle logo & LED color
+  switch(state) {
+  case 0:
+    showbgd(35, 65, EarthListener_200x150, 200, 150, RED, BLACK);
+    controlLED('R');
+    state = 1;
+    break;
+  case 1:
+    showbgd(35, 65, EarthListener_200x150, 200, 150, GREEN, BLACK);
+    controlLED('G');
+    state = 2;
+    break;
+  case 2:
+    showbgd(35, 65, EarthListener_200x150, 200, 150, BLUE, BLACK);
+    controlLED('B');
+    state=0;
+    break;
+  }
+}
+
+void BootScreen::clear() {
+  //clear logo & version for sensor info
+  tft.fillRect(0,65,320,175,BLACK);
+  controlLED('0');
+  
+}
+
 bool BootScreen::draw() {
 
   if(!isEnabled())
@@ -59,22 +98,7 @@ bool BootScreen::draw() {
     tft.print(SWversion);
     //set font to standard system font
     tft.setFont();
-    //test LED
-    controlLED('W');
-    delay(1500);
-    //cycle logo & LED color
-    showbgd(35, 65, EarthListener_200x150, 200, 150, RED, BLACK);
-    controlLED('R');
-    delay(500);
-    showbgd(35, 65, EarthListener_200x150, 200, 150, GREEN, BLACK);
-    controlLED('G');
-    delay(500);
-    showbgd(35, 65, EarthListener_200x150, 200, 150, BLUE, BLACK);
-    controlLED('B');
-    delay(500);
-    //clear logo & version for sensor info
-    tft.fillRect(0,65,320,175,BLACK);
-    controlLED('0');
+
 
     // yes, draw this one
     return (true);

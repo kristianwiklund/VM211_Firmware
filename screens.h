@@ -16,9 +16,14 @@ public:
 
 class BootScreen : public Screen {
 
+  bool isdrawn=false;
+  int state=0;
+  
 public:
   BootScreen();
   bool draw();
+  void cycle();
+  void clear();
 };
 
 class InfoScreen : public Screen {

@@ -19,9 +19,6 @@ void setup(void)
   Serial.println("----------------------------------");
   Serial.println();
 
-#ifdef WITH_ESP01  
-  network_setup();
-#endif
   
   /* --- LCD screen feedback --- */
   Serial.println("***LCD screen feedback***");
@@ -97,8 +94,7 @@ void setup(void)
   Serial.println("Show EarthListener boot animation");
   Serial.println();
   showScreen(0);
-
-
+  
   /* --- Check first boot & if true, set values to default settings --- */
   if(EEPROM.read(firstBoot_EEPROMaddr))
   {
@@ -111,7 +107,15 @@ void setup(void)
     EEPROM.write(firstBoot_EEPROMaddr, false);    //set firstboot on false, this will not be run again
   }
 
+#ifdef WITH_ESP01  
+  network_setup();
+#endif
 
+
+  // clear the screen before moving on with sensors
+  // show the logo for 1 second before clearing
+  delay(1000);
+  bootscreen.clear();
   /* --- CCS811 sensor feedback --- */
   ccs811_setup();
 

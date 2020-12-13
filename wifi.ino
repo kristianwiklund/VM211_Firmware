@@ -63,6 +63,8 @@ void network_setup() {
   Serial3.begin(115200);
   WiFi.init(Serial3);
 
+  bootscreen.cycle();
+  
   if (WiFi.status() == WL_NO_MODULE) {
     Serial.println("Communication with WiFi module failed!");
     // don't continue
@@ -74,6 +76,7 @@ void network_setup() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.print('.');
+    bootscreen.cycle();
   }
   wifienabled = true;
   
