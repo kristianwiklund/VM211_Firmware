@@ -39,6 +39,9 @@ The alarm clock functionality is built around two main components:
 
 -------------------------------------------------------
 
+Change log v4.0.4.kw
+- Changed from Sparkfun BME280 library to Adafruit BME280 library.
+
 Change log v4.0.3.kw
 - Changed from Sparkfun CCS811 library to Adafruit CCS811 library in an attempt to get rid of crazy high CO2 readings. Seems to work better. Don't know why.
 - Changed to use the boot animation as feedback, instead of blocking the boot, it now cycles its colors as part of wifi connection
