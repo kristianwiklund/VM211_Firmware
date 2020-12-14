@@ -1,11 +1,8 @@
 Requirements
 ============
 
-To use the wifi-mqtt feature, you need to install the WiFiEspAt library - it is not included in the Velleman-legacy "src" directory.
-
-You also need to install the Adafruit CCS811 library.
-
-On Linux, you can install both by running the '''dependencies.sh''' script, if you have installed arduino-cli
+You need to install a few libraries to use this code, on Linux, you can install them by running the '''dependencies.sh''' script, if you have installed arduino-cli.
+Otherwise, check the dependencies.sh file to find out which libs to install
 
 Preparing the ESP-01 device
 ===========================
