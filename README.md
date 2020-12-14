@@ -1,3 +1,6 @@
+
+![Clock picture](/pics/clock.jpg)
+
 Requirements
 ============
 
@@ -7,8 +10,8 @@ Otherwise, check the dependencies.sh file to find out which libs to install
 Preparing the ESP-01 device
 ===========================
 
-Then you need to flash your ESP-01 to use espressif firmware 1.7.3, which is found here: https://www.espressif.com/en/support/download/at
-Instructions for flashing is available in the WiFiEspAT README.
+Unless already flashed with the right firmware, you need to flash your ESP-01 to use espressif firmware 1.7.3, which is found here: https://www.espressif.com/en/support/download/at
+Instructions for flashing is available in the WiFiEspAT README. The reason is that the WiFiEspAT library need 1.7.x to provide a stable networking experience. 
 
 The Wifi credentials are not set in the VM211 sketch, use the tools/setuppersistentwificonnection example from wifiespat to do that.
 
@@ -19,6 +22,8 @@ You need to connect the ESP01 to the Arduino through a level converter. You also
 the 3.3V arduino power is not good enough. The ESP01 need to use serial3 (which is the only easily accessible port in the VM211)
 
 Note to self: It is likely that the 5V power isn't good enough either, in that case, it has to be connected to the input power on the arduino
+
+![ESP Connection](/pics/esp.png)
 
 Configuration
 =============
@@ -34,6 +39,8 @@ The alarm clock functionality is built around two main components:
 1. (Implemented) Real time chip. This is required to display the clock. Currently the DS1307 is supported (that is what I had around). This adds a ninth "screen" and a config.h file to set parameters. 
 
 2. (Not Implemented Yet) mqtt control of the alarms
+
+
 
 -------------------------------------------------------
 
