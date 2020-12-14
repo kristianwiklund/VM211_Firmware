@@ -21,7 +21,7 @@
 #include "src/Adafruit-GFX-Library/Fonts/FreeSans9pt7b.h" // Font FreeSans 9pts (as an alternative for basic font)
 #include "src/MCUFRIEND_kbv/MCUFRIEND_kbv.h"           	  // TFT library by David Prentice
 #include "src/SDmega/SDmega.h"                          	// SD library (mod by PSI to work with MEGA & TFT SD card shield)
-#include "src/SparkFun_BME280/src/SparkFunBME280.h"    	  // BME280 library by SparkFun
+//#include "src/SparkFun_BME280/src/SparkFunBME280.h"    	  // BME280 library by SparkFun
 #include "src/SparkFun_AS3935/src/SparkFun_AS3935.h"          // AS3935 library by SparkFun
 #include "src/TFTLCD-Library/Adafruit_TFTLCD.h"        	  // Hardware-specific library for TFT screen by Adafruit
 #include "src/TouchScreen/TouchScreen.h"               	  // TouchScreen library by Adafruit
@@ -29,6 +29,7 @@
 #include "src/RTClib/RTClib.h"                            // Adafruit RTC library 
 #include "config.h"                                       // instead of the magic numbers in the original code
 #include <Adafruit_CCS811.h>
+#include <Adafruit_BME280.h>
 
 #ifdef WITH_ESP01
 
@@ -55,7 +56,8 @@ Adafruit_CCS811 myCCS811;
 
 /* --- BME280 air sensor --- */
 #define BME280_ADDR 0x77      //Default I2C Address of BME280 sensor, can be 0x76 if jumper closed
-BME280 myBME280;
+Adafruit_BME280 myBME280;
+
 float HUMIDITY_BME280;
 float AMBIENTPRESSURE_BME280;
 float AMBIENTPRESSURE_BME280_c; //converted to mBar (= Pa / 100);
@@ -221,11 +223,11 @@ void loop(void)
     minutesSinceAS3935Trigger = returnMinutes(millis() - AS3935IrqTriggeredTime);
     
     //read data from BME280
-    HUMIDITY_BME280 = myBME280.readFloatHumidity();
-    AMBIENTPRESSURE_BME280 = myBME280.readFloatPressure();
+    HUMIDITY_BME280 = myBME280.readHumidity();
+    AMBIENTPRESSURE_BME280 = myBME280.readPressure();
     AMBIENTPRESSURE_BME280_c = AMBIENTPRESSURE_BME280 / 100; //convert Pa to mBar
-    ALTITUDE_BME280 = myBME280.readFloatAltitudeMeters();
-    TEMP_BME280 = myBME280.readTempC();
+    ALTITUDE_BME280 = myBME280.readAltitude(seaLevelPressure);
+    TEMP_BME280 = myBME280.readTemperature();
     //compensate temp & humi data
     TEMP_BME280 = TEMP_BME280 + TEMP_comp;
     

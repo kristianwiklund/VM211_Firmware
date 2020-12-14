@@ -5,6 +5,51 @@
 #include "config.h"
 #include "ccs811.h"
 
+void bme280_setup() {
+  Serial.println("***BME280 Sensor feedback***");
+  
+  tft.setCursor(15, 165);
+  tft.setTextColor(WHITE); 
+  tft.setTextSize(2);
+  tft.print("BME280 status: ");
+  
+  if(myBME280.begin(BME280_ADDR) == false)
+  {
+    Serial.println("BME280 Sensor connection failed!");
+    tft.setTextColor(RED); 
+    tft.print("NOT FOUND");
+  }
+  else
+  {
+    Serial.println("BME280 Sensor connection successful!");
+    tft.setTextColor(GREEN); 
+    tft.print("DETECTED");
+    tempscreen.setEnabled(true);
+    pressurescreen.setEnabled(true);
+    humidityscreen.setEnabled(true);
+  }
+
+  // weather monitoring - setup code from https://github.com/adafruit/Adafruit_BME280_Library
+  // Copyright (c) 2015, Limor Fried & Kevin Townsend for Adafruit Industries
+  //
+  // Adafruit invests time and resources providing this open source code,
+  // please support Adafruit andopen-source hardware by purchasing products
+  // from Adafruit!
+  //
+  Serial.println("BME280: -- Weather Station Scenario --");
+  Serial.println("BME280: forced mode, 1x temperature / 1x humidity / 1x pressure oversampling,");
+  Serial.println("filter off");
+  myBME280.setSampling(Adafruit_BME280::MODE_FORCED,
+		  Adafruit_BME280::SAMPLING_X1, // temperature
+		  Adafruit_BME280::SAMPLING_X1, // pressure
+		  Adafruit_BME280::SAMPLING_X1, // humidity
+		  Adafruit_BME280::FILTER_OFF   );
+  // end code copied from Adafruit example
+  
+  MetricON = EEPROM.read(MetricON_EEPROMaddr);  //read metric or imperial state from memory. If not set, this will be true, since all EEPROM addresses are 0xFF by default
+  Serial.println();
+}
+
 void setup(void)
 {
   /* --- Start serial & print sketch info --- */
@@ -214,41 +259,7 @@ void setup(void)
 
   
   /* --- BME280 sensor feedback --- */
-  Serial.println("***BME280 Sensor feedback***");
-  myBME280.setI2CAddress(BME280_ADDR);        //The I2C address must be set before .begin() otherwise the cal values will fail to load
-  
-  tft.setCursor(15, 165);
-  tft.setTextColor(WHITE); 
-  tft.setTextSize(2);
-  tft.print("BME280 status: ");
-  
-  if(myBME280.beginI2C() == false)
-  {
-    Serial.println("BME280 Sensor connection failed!");
-    tft.setTextColor(RED); 
-    tft.print("NOT FOUND");
-  }
-  else
-  {
-    Serial.println("BME280 Sensor connection successful!");
-    tft.setTextColor(GREEN); 
-    tft.print("DETECTED");
-    tempscreen.setEnabled(true);
-    pressurescreen.setEnabled(true);
-    humidityscreen.setEnabled(true);
-  }
-  myBME280.setFilter(1); //0 to 4 is valid. Filter coefficient. See 3.4.4
-  myBME280.setStandbyTime(0); //0 to 7 valid. Time between readings. See table 27.
-  myBME280.setTempOverSample(1); //0 to 16 are valid. 0 disables temp sensing. See table 24.
-  myBME280.setPressureOverSample(1); //0 to 16 are valid. 0 disables pressure sensing. See table 23.
-  myBME280.setHumidityOverSample(1); //0 to 16 are valid. 0 disables humidity sensing. See table 19.
-  myBME280.setMode(MODE_NORMAL); //MODE_SLEEP, MODE_FORCED, MODE_NORMAL is valid. See 3.3
-  myBME280.setReferencePressure(seaLevelPressure); //Adjust the sea level pressure used for altitude calculations. This should be a variable, not fixed!
-  //If you do not set the correct sea level pressure for your location FOR THE CURRENT DAY it will not be able to calculate the altitude accurately!
-  //Barometric pressure at sea level changes daily based on the weather!
-  //read value from EEPROM if Temp is in °F or °C and lightning units are in km or mi
-  MetricON = EEPROM.read(MetricON_EEPROMaddr);  //read metric or imperial state from memory. If not set, this will be true, since all EEPROM addresses are 0xFF by default
-  Serial.println();
+  bme280_setup();
 
 
   /* --- set buzzer pin & read value from EEPROM --- */
