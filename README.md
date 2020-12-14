@@ -15,12 +15,10 @@ The Wifi credentials are not set in the VM211 sketch, use the tools/setuppersist
 Connecting the ESP-01 to the arduino
 ====================================
 
-You mustconnect the ESP01 to the Arduino through a level converter, 5V arduino side, 3.3V ESP side. 
-You also need a 3.3V regulator connected to the power input port on the arduino to power the ESP, the 3.3V arduino power is not good enough and neither is the 5V power rail. 
+You need to connect the ESP01 to the Arduino through a level converter. You also need a 3.3V regulator connected to the 5V rail on the arduino,
+the 3.3V arduino power is not good enough. The ESP01 need to use serial3 (which is the only easily accessible port in the VM211)
 
-The ESP01 need to use serial3 (which is the only easily accessible port in the VM211)
-
-I soldered my esp in place, it was easier for me than to try to use the connectors. Please adjust to your own skill level as needed. 
+Note to self: It is likely that the 5V power isn't good enough either, in that case, it has to be connected to the input power on the arduino
 
 Configuration
 =============
