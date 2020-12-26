@@ -1,9 +1,16 @@
 // configuration file to hold some basic constants to avoid magic numbers - refactoring work in progress
 
-#define SWversion "v4.0.4.kw"
+#define SWversion "v4.0.5.kw"
 
 #ifndef CONFIG_H
 #define CONFIG_H
+
+// clock settings
+#define NTP_HOST "time.windows.com"
+
+#define CLOCK_DST_RULE {"EDT", Last, Sun, Mar, 3, 120} // UTC + 2 hours in summer
+#define CLOCK_STD_RULE {"EST", Last, Sun, Oct, 2, 60} // UTC + 1 hour in winter
+
 
 // default interval to log to SDCARD and mqtt
 #define UPDATE_INTERVAL 10 // update sensors every 10 seconds
@@ -11,7 +18,7 @@
 
 #define WITH_ESP01 // for wifi
 #define MQTT_HOST "10.168.0.194"
-#define NTP_HOST "time.windows.com"
+
 
 #define INITIAL_SLIDESHOW_STATUS 1 // change to 0 to not run slideshow from start. Using the slideshow from start will show the config screens, before getting into the loop correctly.
 

@@ -44,6 +44,14 @@ The alarm clock functionality is built around two main components:
 
 -------------------------------------------------------
 
+Change log v4.0.5.kw
+- Swapped out RTC library for a new one. Hence, added new dependencies, check the dependencies.sh file for which libs to install
+- Changed timekeeping library to use the "Time" library, since it is capable of resyncing with either NTP or RTC
+- Added NTP sync. Set sync host in config.h
+- Added code to select sync source - if NTP is available, it will use NTP, otherwise RTC1307
+- Added time zone handling. Redefine your time zone in config.h
+- ifdef:ed the networking code. It will not be built unless WITH_ESP01 is defined (default)
+
 Change log v4.0.4.kw
 - Changed from Sparkfun BME280 library to Adafruit BME280 library.
 

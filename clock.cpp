@@ -27,9 +27,11 @@
 #include <TimeLib.h>
 #include "clock.h"
 
-// clock includes
-//#include "src/RTClib/RTClib.h"                            // Adafruit RTC library
-//extern RTC_DS1307 rtc;
+#include <Timezone.h>
+TimeChangeRule myDST = CLOCK_DST_RULE;
+TimeChangeRule mySTD = CLOCK_STD_RULE;
+Timezone myTZ(myDST, mySTD);
+TimeChangeRule *tcr;
 
 #include <DS1307RTC.h>  
 
@@ -52,7 +54,9 @@ void printDigits(int digits){
 
 void digitalClockDisplay(){
   // digital clock display of the time
-  Serial.print(hour());
+  time_t utc = now();
+  time_t local = myTZ.toLocal(utc, &tcr);
+  Serial.print(hour(local));
   printDigits(minute());
   printDigits(second());
   Serial.print(" ");
@@ -147,9 +151,13 @@ ClockScreen::ClockScreen() {
 }
 
 bool ClockScreen::draw() {
+  time_t utc = now();
+  time_t t = myTZ.toLocal(utc, &tcr);
   static int oldsec=0, oldmin=0, oldhour=0;
   if(!isEnabled())
     return false;
+
+  
   
   // this clears the screen in the caller
   // tft.fillRect(10,60,310,180,BLACK); 
@@ -176,11 +184,11 @@ bool ClockScreen::draw() {
 
 // cleanup
 
-  if(oldsec!=second()) {
+  if(oldsec!=second(t)) {
     tft.drawLine(CLOCK_X, CLOCK_Y, CLOCK_R*sin(oldsec*2*PI/60)+CLOCK_X,-CLOCK_R*cos(oldsec*2*PI/60)+CLOCK_Y, BLACK);
   }
 
-if(oldmin!=minute()) {
+if(oldmin!=minute(t)) {
     tft.fillTriangle(CLOCK_R*sin(oldmin*2*PI/60)+CLOCK_X,-CLOCK_R*cos(oldmin*2*PI/60)+CLOCK_Y,
        -CLOCK_H_LEN*cos(oldmin*2*PI/60)+CLOCK_X,-CLOCK_H_LEN*sin(oldmin*2*PI/60)+CLOCK_Y,  
        CLOCK_H_LEN*cos(oldmin*2*PI/60)+CLOCK_X,CLOCK_H_LEN*sin(oldmin*2*PI/60)+CLOCK_Y,
@@ -188,7 +196,7 @@ if(oldmin!=minute()) {
   }
 
 
- if(oldhour!=hour() || oldmin!=minute()) {
+ if(oldhour!=hour(t) || oldmin!=minute(t)) {
     tft.fillTriangle(CLOCK_H_HAND*CLOCK_R*sin((oldhour+oldmin/60.0)*2*PI/12)+CLOCK_X,-CLOCK_H_HAND*CLOCK_R*cos((oldhour+oldmin/60.0)*2*PI/12)+CLOCK_Y,
        -CLOCK_H_LEN*cos((oldhour+oldmin/60.0)*2*PI/12)+CLOCK_X,-CLOCK_H_LEN*sin((oldhour+oldmin/60.0)*2*PI/12)+CLOCK_Y,  
        CLOCK_H_LEN*cos((oldhour+oldmin/60.0)*2*PI/12)+CLOCK_X,CLOCK_H_LEN*sin((oldhour+oldmin/60.0)*2*PI/12)+CLOCK_Y,
@@ -200,9 +208,9 @@ if(oldmin!=minute()) {
  
 
     
-  oldmin=minute();
-  oldsec=second();
-  oldhour=hour();
+  oldmin=minute(t);
+  oldsec=second(t);
+  oldhour=hour(t);
 
   tft.fillTriangle(CLOCK_H_HAND*CLOCK_R*sin((oldhour+oldmin/60.0)*2*PI/12)+CLOCK_X,-CLOCK_H_HAND*CLOCK_R*cos((oldhour+oldmin/60.0)*2*PI/12)+CLOCK_Y,
   -CLOCK_H_LEN*cos((oldhour+oldmin/60.0)*2*PI/12)+CLOCK_X,-CLOCK_H_LEN*sin((oldhour+oldmin/60.0)*2*PI/12)+CLOCK_Y,  
