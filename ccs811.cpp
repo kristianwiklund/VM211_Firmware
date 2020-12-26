@@ -101,8 +101,7 @@ void ccs811_loop()
 {
   if(!haveccs811) {
       CO2=0;
-      TVOC=0;
-      
+      TVOC=0;      
     return;
   }
   //Check to see if data is ready with .dataAvailable()

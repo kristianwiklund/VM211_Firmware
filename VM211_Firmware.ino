@@ -44,6 +44,29 @@ bool wifienabled=false;
 #endif
 
 
+#include "screens.h"
+
+
+BootScreen bootscreen;
+InfoScreen infoscreen;
+CO2Screen co2screen;
+TVOCScreen tvocscreen;
+TempScreen tempscreen;
+PressureScreen pressurescreen;
+HumidityScreen humidityscreen;
+ClockScreen clockscreen;
+LightningScreen lightningscreen;
+
+Screen *tehScreens[] = { // spelling intentional
+		       &co2screen,
+		       &tvocscreen,
+		       &tempscreen,
+		       &pressurescreen,
+		       &humidityscreen,
+		       &lightningscreen,
+		       &clockscreen
+};
+
 
 /* --- first boot --- */
 int firstBoot_EEPROMaddr = 5;   //EEPROM long term memory adress that we use to check if the EarthListener has been booted before (default will be true).
@@ -210,46 +233,60 @@ void loop(void)
       mqtt_reconnect();
     }
 #endif
-    //increase the secondCounter
-    
+
+    // refactor this
+    // (1) read only the sensors that actually exist
+    // (2) send only the sensors that actually exist to mqtt
+    // (3) log only the sensors that actually exist to the sdcard
+
+    // which sensors exist?
+    // the ones with active screen...
+ 
     
     /****** poll sensors & update vars + log to SD *****/
     // make a string for assembling the data to log on the SD card & add the current time:
     
-    char buf[17];
-    sprintf(buf,"%02d %02d:%02d:%02d",runDays,runHours,runMinutes,runSeconds);
-    dataString = buf;
-    dataString += ",";
+    // char buf[17];
+    // sprintf(buf,"%02d %02d:%02d:%02d",runDays,runHours,runMinutes,runSeconds);
+    // dataString = buf;
+    // dataString += ",";
     
     //calculate minutes between current time & time when AS3935sensor was triggered
-    minutesSinceAS3935Trigger = returnMinutes(millis() - AS3935IrqTriggeredTime);
-    
-    //read data from BME280
-    HUMIDITY_BME280 = myBME280.readHumidity();
-    AMBIENTPRESSURE_BME280 = myBME280.readPressure();
-    AMBIENTPRESSURE_BME280_c = AMBIENTPRESSURE_BME280 / 100; //convert Pa to mBar
-    ALTITUDE_BME280 = myBME280.readAltitude(seaLevelPressure);
-    TEMP_BME280 = myBME280.readTemperature();
-    //compensate temp & humi data
-    TEMP_BME280 = TEMP_BME280 + TEMP_comp;
-    
-    if(HUMIDITY_BME280 <= (100 - HUMI_comp))  //make sure we don't have values > 100%
-      {
-	HUMIDITY_BME280 = HUMIDITY_BME280 + HUMI_comp;
-      }
-    
-    //add data to dataString to write to SD
-    dataString += TEMP_BME280,2;
-    dataString += ",";
-    dataString += HUMIDITY_BME280,2;
-    dataString += ",";
-    dataString += AMBIENTPRESSURE_BME280_c,2;
-    dataString += ",";
-    dataString += ALTITUDE_BME280,2;
-    dataString += ",";
-    
-    //read data from CCS811 (or show error)
+    if(lightningscreen.isEnabled())
+      minutesSinceAS3935Trigger = returnMinutes(millis() - AS3935IrqTriggeredTime);
 
+    //read data from BME280
+    if(humidityscreen.isEnabled()) {
+      HUMIDITY_BME280 = myBME280.readHumidity();
+      if(HUMIDITY_BME280 <= (100 - HUMI_comp))  //make sure we don't have values > 100%
+	{
+	  HUMIDITY_BME280 = HUMIDITY_BME280 + HUMI_comp;
+	}
+    }
+
+    if(pressurescreen.isEnabled()) {
+      AMBIENTPRESSURE_BME280 = myBME280.readPressure();
+      AMBIENTPRESSURE_BME280_c = AMBIENTPRESSURE_BME280 / 100; //convert Pa to mBar
+      ALTITUDE_BME280 = myBME280.readAltitude(seaLevelPressure);
+    }
+
+    if(tempscreen.isEnabled()) {
+      TEMP_BME280 = myBME280.readTemperature();
+      //compensate temp & humi data
+      TEMP_BME280 = TEMP_BME280 + TEMP_comp;
+    }
+    
+    // //add data to dataString to write to SD
+    // dataString += TEMP_BME280,2;
+    // dataString += ",";
+    // dataString += HUMIDITY_BME280,2;
+    // dataString += ",";
+    // dataString += AMBIENTPRESSURE_BME280_c,2;
+    // dataString += ",";
+    // dataString += ALTITUDE_BME280,2;
+    // dataString += ",";
+    
+    // checks for sensor availability is done inside the ccs811 code
     ccs811_loop();
     //add data to dataString to write to SD
     // assumes that we have data btw.
@@ -266,12 +303,20 @@ void loop(void)
    #ifdef WITH_ESP01
     // to mqtt
     if(wifienabled && client.connected()) {
-      f2mqtt("vm211/humidity",HUMIDITY_BME280);
-      f2mqtt("vm211/pressure",AMBIENTPRESSURE_BME280_c);
-      f2mqtt("vm211/altitude",ALTITUDE_BME280);
-      f2mqtt("vm211/temperature",TEMP_BME280);
-      f2mqtt("vm211/co2", CO2);
-      f2mqtt("vm211/tvoc", TVOC);
+      if(humidityscreen.isEnabled()) 
+	f2mqtt("vm211/humidity",HUMIDITY_BME280);
+      if(pressurescreen.isEnabled())  {
+	f2mqtt("vm211/pressure",AMBIENTPRESSURE_BME280_c);
+	f2mqtt("vm211/altitude",ALTITUDE_BME280);
+      }
+
+      if(tempscreen.isEnabled())
+	f2mqtt("vm211/temperature",TEMP_BME280);
+
+      if(co2screen.isEnabled())
+	f2mqtt("vm211/co2", CO2);
+      if(tvocscreen.isEnabled())
+	f2mqtt("vm211/tvoc", TVOC);
       
 
     }

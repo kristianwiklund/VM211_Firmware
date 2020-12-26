@@ -1,27 +1,6 @@
 #include "config.h"
 #include "ccs811.h"
-#include "screens.h"
 
-
-BootScreen bootscreen;
-InfoScreen infoscreen;
-CO2Screen co2screen;
-TVOCScreen tvocscreen;
-TempScreen tempscreen;
-PressureScreen pressurescreen;
-HumidityScreen humidityscreen;
-ClockScreen clockscreen;
-LightningScreen lightningscreen;
-
-Screen *tehScreens[] = { // spelling intentional
-		       &co2screen,
-		       &tvocscreen,
-		       &tempscreen,
-		       &pressurescreen,
-		       &humidityscreen,
-		       &lightningscreen,
-		       &clockscreen
-};
 #define NRSCREENS 7
 int nrOfScreens=0;
 #define MAXSCREEN (NRSCREENS+2)
