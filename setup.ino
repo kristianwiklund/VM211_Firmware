@@ -4,6 +4,8 @@
 
 #include "config.h"
 #include "ccs811.h"
+#include <TimeLib.h>
+#include "clock.h"
 
 void bme280_setup() {
   Serial.println("***BME280 Sensor feedback***");
@@ -319,29 +321,14 @@ void setup(void)
   tft.setCursor(15, 225);
   tft.setTextColor(WHITE); 
   tft.setTextSize(2);
-  tft.print("DS1307 status: ");
-  // see if the rtc is present and can be initialized:
-  if (rtc.begin()) 
+  tft.print("Clock status: ");
+  // clock returns true if we have at least ONE sync source (RTC or NTP)
+  if (setup_clock()) 
   {
-      Serial.println("RTC initialized!");
+      Serial.println("Clock initialized!");
       clockscreen.setEnabled(true);
       tft.setTextColor(GREEN); 
       tft.print("DETECTED");
-      DateTime now = rtc.now(); 
-      Serial.print(now.year(), DEC);
-      Serial.print('/');
-      Serial.print(now.month(), DEC);
-      Serial.print('/');
-      Serial.print(now.day(), DEC);
-      Serial.print(" (");
-      Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-      Serial.print(") ");
-      Serial.print(now.hour(), DEC);
-      Serial.print(':');
-      Serial.print(now.minute(), DEC);
-      Serial.print(':');
-      Serial.print(now.second(), DEC);
-      Serial.println();
   }
   else
   {

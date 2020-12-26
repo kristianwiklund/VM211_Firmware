@@ -24,10 +24,13 @@
 // do not add this code unless with have an ESP01 connected...
 #ifdef WITH_ESP01
 
+#include <Arduino.h>
 #include <SPI.h>
 #include <WiFiEspAT.h>
 #include <PubSubClient.h>
+#include <sys/types.h>
 #include <NTPClient.h>
+#include <Time.h>
 
 // ntp client code
 
@@ -35,7 +38,7 @@ WiFiUDP ntpUDP;
 // You can specify the time server pool and the offset (in seconds, can be
 // changed later with setTimeOffset() ). Additionaly you can specify the
 // update interval (in milliseconds, can be changed using setUpdateInterval() ).
-NTPClient timeClient(ntpUDP, NTP_HOST, 3600, 60000);
+NTPClient timeClient(ntpUDP, NTP_HOST, 0, 60000);
 
 
 // calling this reboots the arduino
@@ -150,6 +153,12 @@ void network_setup() {
   Serial.println(timeClient.getFormattedTime());
 }
 
+
+time_t getNtpTime() {
+  timeClient.update();
+  return timeClient.getEpochTime();
+
+}
 
 // endif WITH_ESP01
 #endif

@@ -25,10 +25,11 @@
 #include "src/TFTLCD-Library/Adafruit_TFTLCD.h"        	  // Hardware-specific library for TFT screen by Adafruit
 #include "src/TouchScreen/TouchScreen.h"               	  // TouchScreen library by Adafruit
 #include "bitmaps.h"                            			    // Icon library (local, hence the "")
-#include "src/RTClib/RTClib.h"                            // Adafruit RTC library 
+//#include "src/RTClib/RTClib.h"                            // Adafruit RTC library 
 #include "config.h"                                       // instead of the magic numbers in the original code
 #include <Adafruit_CCS811.h>
 #include <Adafruit_BME280.h>
+#include <TimeLib.h>
 
 #ifdef WITH_ESP01
 
@@ -144,7 +145,7 @@ boolean SDpresent = 0;        //boolean to store if SD card is present during se
 boolean logFileExists = 0;    //boolean to store if logfile exists on SD card
 
 /* --- real time clock - currently set to DS1307 rtc but can be changed to anything that the RTC library supports --- */
-RTC_DS1307 rtc;
+//RTC_DS1307 rtc;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; // from RTCLib example
 
 const char * logFileName = "datalog.csv";   //CSV so you can easy load the data into MS Excel
