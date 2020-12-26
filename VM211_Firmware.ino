@@ -21,7 +21,6 @@
 #include "src/Adafruit-GFX-Library/Fonts/FreeSans9pt7b.h" // Font FreeSans 9pts (as an alternative for basic font)
 #include "src/MCUFRIEND_kbv/MCUFRIEND_kbv.h"           	  // TFT library by David Prentice
 #include "src/SDmega/SDmega.h"                          	// SD library (mod by PSI to work with MEGA & TFT SD card shield)
-//#include "src/SparkFun_BME280/src/SparkFunBME280.h"    	  // BME280 library by SparkFun
 #include "src/SparkFun_AS3935/src/SparkFun_AS3935.h"          // AS3935 library by SparkFun
 #include "src/TFTLCD-Library/Adafruit_TFTLCD.h"        	  // Hardware-specific library for TFT screen by Adafruit
 #include "src/TouchScreen/TouchScreen.h"               	  // TouchScreen library by Adafruit
@@ -63,7 +62,7 @@ float AMBIENTPRESSURE_BME280;
 float AMBIENTPRESSURE_BME280_c; //converted to mBar (= Pa / 100);
 float ALTITUDE_BME280;
 float TEMP_BME280;
-float seaLevelPressure = 101325; //pressure at sea level (Pa), needs to be set daily for proper altitude value!
+float seaLevelPressure = SEALEVELPRESSURE; //pressure at sea level (Pa), needs to be set daily for proper altitude value!
 float TEMP_comp = -3.3;   //the EarthListener is warmed up from the TFT screen hence reporting a higher temperature. This compensation corrects this.
 float HUMI_comp = 17;     //same for the humidity. Values are experimental and should be changed according to your findings.
 

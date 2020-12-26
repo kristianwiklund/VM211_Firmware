@@ -15,6 +15,10 @@
 #define INITIAL_SLIDESHOW_STATUS 1 // change to 0 to not run slideshow from start. Using the slideshow from start will show the config screens, before getting into the loop correctly.
 
 
+// for BME280
+
+#define SEALEVELPRESSURE (1013.25)
+
 // display positioning
 #define startXimg 10
 #define startYimg 175
