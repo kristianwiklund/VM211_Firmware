@@ -20,6 +20,10 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 //
+
+// do not add this code unless with have an ESP01 connected...
+#ifdef WITH_ESP01
+
 #include <SPI.h>
 #include <WiFiEspAT.h>
 #include <PubSubClient.h>
@@ -31,7 +35,7 @@ WiFiUDP ntpUDP;
 // You can specify the time server pool and the offset (in seconds, can be
 // changed later with setTimeOffset() ). Additionaly you can specify the
 // update interval (in milliseconds, can be changed using setUpdateInterval() ).
-NTPClient timeClient(ntpUDP, "time.windows.com", 3600, 60000);
+NTPClient timeClient(ntpUDP, NTP_HOST, 3600, 60000);
 
 
 // calling this reboots the arduino
@@ -77,25 +81,24 @@ void mqtt_reconnect() {
 char *f2mqtt(char *t, float v) {
   char s[50];
 
-#ifdef WITH_ESP01
     if (wifienabled && client.connected()) {
       dtostrf(v,3,1,s);
       client.publish(t,s);
     }
-#endif
 
 }
 
 char *i2mqtt(char *t, int v) {
   char s[50];
 
-#ifdef WITH_ESP01
     if (wifienabled && client.connected()) {
       client.publish(t,itoa(v,s,10));
     }
-#endif
 
 }
+
+
+
 
 void network_setup() {
 
@@ -147,6 +150,9 @@ void network_setup() {
   Serial.println(timeClient.getFormattedTime());
 }
 
+
+// endif WITH_ESP01
+#endif
 
 
 

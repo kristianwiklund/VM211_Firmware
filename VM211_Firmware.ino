@@ -36,9 +36,10 @@
 #include <WiFiEspAT.h>
 #include <PubSubClient.h>
 WiFiClient wificlient;
-bool wifienabled=false;
+
 PubSubClient client(wificlient);
 
+bool wifienabled=false;
 #endif
 
 
@@ -179,9 +180,10 @@ int MetricON_EEPROMaddr = 2;  // address to store this value in long term memory
 void loop(void)
 {
   String dataString = "";
+#ifdef WITH_ESP01
   // mqtt loop
   client.loop();
-
+#endif
   //timing: get time since boot: will write to global vars 
   getTimeSinceBoot();
 
@@ -259,6 +261,8 @@ void loop(void)
   }
   if (readCounter > LOGGING_INTERVAL) {
     String x="";
+
+   #ifdef WITH_ESP01
     // to mqtt
     if(wifienabled && client.connected()) {
       f2mqtt("vm211/humidity",HUMIDITY_BME280);
@@ -268,9 +272,10 @@ void loop(void)
       f2mqtt("vm211/co2", CO2);
       f2mqtt("vm211/tvoc", TVOC);
       
-      readCounter = 0;
+
     }
-	  
+    #endif
+      readCounter = 0;	  
 	  //write dataString to SD (if SD card is present & we have passed the interval to log)
 	  if(SDpresent)
 	    {

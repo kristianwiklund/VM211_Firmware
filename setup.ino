@@ -152,7 +152,8 @@ void setup(void)
     EEPROM.write(firstBoot_EEPROMaddr, false);    //set firstboot on false, this will not be run again
   }
 
-#ifdef WITH_ESP01  
+#ifdef WITH_ESP01
+    // do not run network setup if we don't have network.
   network_setup();
 #endif
 

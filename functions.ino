@@ -415,8 +415,9 @@ void detectedlightningscreen()
             lastErrorLine1 = "Lightning detected!    ";
             lastErrorLine2 = "Distance to strike:";
 
+#ifdef WITH_ESP01
 	    i2mqtt("vm211/lightning", lightning_dist_km);
-	    
+#endif
             if(MetricON)
             {
               Serial.print(lightning_dist_km);
