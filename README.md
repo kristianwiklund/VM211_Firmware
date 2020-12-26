@@ -4,13 +4,15 @@
 Requirements
 ============
 
-You need to install a few libraries to use this code, on Linux, you can install them by running the '''dependencies.sh''' script, if you have installed arduino-cli.
-Otherwise, check the dependencies.sh file to find out which libs to install
+You need to install a few libraries to use this code, on Linux, you can install them by running the '''dependencies.sh''' script, if you have installed arduino-cli. Otherwise, check the dependencies.sh file to find out which libs to install.
+
+The reason for this is that a lot of the code reading sensors have been refactored, and I don't see the point in redistributing any 3PP libraries that are freely available in the IDE. It only causes potential dependency conflicts.
 
 Preparing the ESP-01 device
 ===========================
 
 Unless already flashed with the right firmware, you need to flash your ESP-01 to use espressif firmware 1.7.3, which is found here: https://www.espressif.com/en/support/download/at
+
 Instructions for flashing is available in the WiFiEspAT README. The reason is that the WiFiEspAT library need 1.7.x to provide a stable networking experience. 
 
 The Wifi credentials are not set in the VM211 sketch, use the tools/setuppersistentwificonnection example from wifiespat to do that.
@@ -18,9 +20,9 @@ The Wifi credentials are not set in the VM211 sketch, use the tools/setuppersist
 Connecting the ESP-01 to the arduino
 ====================================
 
-You need to connect the ESP01 to the Arduino through a level converter. You also need a 3.3V regulator connected to the input power rail on the arduino,
-the 3.3V arduino power is not good enough. The ESP01 need to use serial3 (which is the only easily accessible port in the VM211). 
-5V from USB is not sufficient, you need a power supply to power the device. 
+You need to connect the ESP01 to the Arduino through a level converter. You also need a 3.3V regulator connected to the input power rail on the arduino, the 3.3V arduino power is not good enough. 5V from USB is not sufficient, you need a power supply to power the device. 
+The ESP01 need to use serial3 (which is the only easily accessible port in the VM211 design). 
+
 
 ![ESP Connection](/pics/esp.png)
 
@@ -28,7 +30,7 @@ Configuration
 =============
 
 As mentioned above, wifi credentials are handled through the wifiespat tool example.
-MQTT broker host is set in config.h
+MQTT broker host, NTP server, and timezone configuration are set in config.h
 
 -------------------------------------------------------
 

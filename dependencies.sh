@@ -8,3 +8,4 @@ arduino-cli lib install "TimeAlarms"
 arduino-cli lib install "DS1307RTC"
 arduino-cli lib install "NTPClient"
 arduino-cli lib install "Timezone"
+arduino-cli lib install SDConfig
