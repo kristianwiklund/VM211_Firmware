@@ -321,44 +321,46 @@ void loop(void)
 
     }
     #endif
-      readCounter = 0;	  
-	  //write dataString to SD (if SD card is present & we have passed the interval to log)
-	  if(SDpresent)
-	    {
+      readCounter = 0;
+#if 0
+      //write dataString to SD (if SD card is present & we have passed the interval to log)
+      if(SDpresent)
+	{
 
-	      File dataFile = SD.open(logFileName, FILE_WRITE);
-	      // open the file. note that only one file can be open at a time,
-	      // so you have to close this one before opening another.
+	  File dataFile = SD.open(logFileName, FILE_WRITE);
+	  // open the file. note that only one file can be open at a time,
+	  // so you have to close this one before opening another.
            
-	      // if the file is available, write to it:
-	      if (dataFile) 
+	  // if the file is available, write to it:
+	  if (dataFile) 
+	    {
+	      if(!logFileExists)  //the logfile didn't exist, so first print headers
 		{
-		  if(!logFileExists)  //the logfile didn't exist, so first print headers
-		    {
-		      Serial.print("Logfile '");
-		      Serial.print(logFileName);
-		      Serial.println("' did not exist, so print titles first..."); 
-		      dataFile.println("Time since boot [DD HH:MM:SS],Temperature [°C],Humidity [%],Pressure [mBar],Altitude [m],eCO2 [ppm],TVOC [ppb]");
-		      logFileExists = 1;
-		    }
-		  dataFile.println(dataString);
-		  dataFile.close();
+		  Serial.print("Logfile '");
+		  Serial.print(logFileName);
+		  Serial.println("' did not exist, so print titles first..."); 
+		  dataFile.println("Time since boot [DD HH:MM:SS],Temperature [°C],Humidity [%],Pressure [mBar],Altitude [m],eCO2 [ppm],TVOC [ppb]");
+		  logFileExists = 1;
+		}
+	      dataFile.println(dataString);
+	      dataFile.close();
 
-		  // print to the serial port too:
-		  Serial.print("Written to file ");
-		  Serial.print(logFileName);
-		  Serial.print(" on SD card: ");
-		  Serial.println(dataString);
-		}
-	      // if the file isn't open, pop up an error:
-	      else 
-		{
-		  Serial.print("Error opening file ");
-		  Serial.print(logFileName);
-		  Serial.println(" on SD card! No data logged.");
-		}
+	      // print to the serial port too:
+	      Serial.print("Written to file ");
+	      Serial.print(logFileName);
+	      Serial.print(" on SD card: ");
+	      Serial.println(dataString);
+	    }
+	  // if the file isn't open, pop up an error:
+	  else 
+	    {
+	      Serial.print("Error opening file ");
+	      Serial.print(logFileName);
+	      Serial.println(" on SD card! No data logged.");
 	    }
 	}
+#endif
+  } 
 
   //only do next code every second
   if(runSeconds != lastSecond)
