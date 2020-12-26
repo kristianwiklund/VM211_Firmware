@@ -30,17 +30,6 @@ Configuration
 As mentioned above, wifi credentials are handled through the wifiespat tool example.
 MQTT broker host is set in config.h
 
-Documentation for the alarm clock feature
-=========================================
-
-The alarm clock functionality is built around two main components: 
-
-1. (Implemented) Real time chip. This is required to display the clock. Currently the DS1307 is supported (that is what I had around). This adds a ninth "screen" and a config.h file to set parameters. 
-
-2. (Not Implemented Yet) mqtt control of the alarms
-
-
-
 -------------------------------------------------------
 
 Change log v4.0.5.kw
@@ -50,6 +39,7 @@ Change log v4.0.5.kw
 - Added code to select sync source - if NTP is available, it will use NTP, otherwise RTC1307
 - Added time zone handling. Redefine your time zone in config.h
 - ifdef:ed the networking code. It will not be built unless WITH_ESP01 is defined (default)
+- (Temporarily) disabled logging to sd card.
 
 Change log v4.0.4.kw
 - Changed from Sparkfun BME280 library to Adafruit BME280 library.
