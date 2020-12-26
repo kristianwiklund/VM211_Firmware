@@ -200,7 +200,7 @@ void loop(void)
   //  Serial.println(secondCounter);
   // only update measurements every UPDATE_INTERVAL if we are past "logginginterval"
   if (secondCounter > UPDATE_INTERVAL) {
-    Serial.println("Updating sensors");
+    //    Serial.println("Updating sensors");
 
 #ifdef WITH_ESP01
     if (wifienabled && !client.connected()) {
@@ -342,8 +342,8 @@ void loop(void)
 	      if( ( millis() - timeStartSlide ) > (slideshowTimer * 1000) )
 		{
                   previousScreenNr = currentScreenNr;
-		  Serial.print("Changing screen ");
-		  Serial.print(currentScreenNr);
+		  //		  Serial.print("Changing screen ");
+		  //		  Serial.print(currentScreenNr);
 		  currentScreenNr = getnewcurrentscreen(currentScreenNr);
 		  
 		}

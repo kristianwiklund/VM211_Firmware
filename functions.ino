@@ -33,8 +33,8 @@ int getnewcurrentscreen(int csn) {
   }
   
   if (tehScreens[csn+1-3] && tehScreens[csn+1-3]->isEnabled()) {
-    Serial.print("->");
-    Serial.println(csn+1);
+    //    Serial.print("->");
+    //    Serial.println(csn+1);
     return (csn+1);
   }
   else
