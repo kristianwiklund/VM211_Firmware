@@ -475,20 +475,20 @@ void detectedlightningscreen()
           if(BuzzerEnabled){digitalWrite(BuzzerPin, HIGH);}
           controlLED('R');
           controlLogo(RED);
-          delay(100);
+          Alarm.delay(100);
           if(BuzzerEnabled){digitalWrite(BuzzerPin, LOW);}
           controlLED('Y');
           controlLogo(YELLOW);
-          delay(200);
+          Alarm.delay(200);
           if(BuzzerEnabled){digitalWrite(BuzzerPin, HIGH);}
           controlLED('R');
           controlLogo(RED);
-          delay(100);
+          Alarm.delay(100);
           if(BuzzerEnabled){digitalWrite(BuzzerPin, LOW);}
           controlLED('Y');
           controlLogo(YELLOW);
           
-          delay(3000); //keep this info on screen for 3 seconds
+          Alarm.delay(3000); //keep this info on screen for 3 seconds
 }
 
 
@@ -503,7 +503,7 @@ void setupAS3935()
     {
              lightningIIC.resetSettings();
     }
-    delay(500);
+    Alarm.delay(500);
     
     //read value for AS3935_OUTDOORS out of EEPROM memory
     AS3935_OUTDOORS = EEPROM.read(AS3935_outdoor_EEPROMaddr);
@@ -1243,7 +1243,7 @@ void toggleInterface()
   tft.setTextColor(RED,BLACK); 
   tft.setCursor(20, 220);
   tft.print("   Interface changed, please reboot!  ");
-  delay(800);
+  Alarm.delay(800);
 }
 
 

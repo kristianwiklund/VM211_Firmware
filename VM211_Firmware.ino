@@ -30,6 +30,7 @@
 #include <Adafruit_CCS811.h>
 #include <Adafruit_BME280.h>
 #include <TimeLib.h>
+#include <TimeAlarms.h>
 
 #ifdef WITH_ESP01
 
@@ -208,6 +209,10 @@ void loop(void)
   // mqtt loop
   client.loop();
 #endif
+
+  // update the alarm handling
+  Alarm.delay(0);
+  
   //timing: get time since boot: will write to global vars 
   getTimeSinceBoot();
 
@@ -374,7 +379,7 @@ void loop(void)
           Serial.println("Interrupt from lightning sensor");
           
           //check interrupt source
-          delay(5); //wait so not to overflow the bus
+          Alarm.delay(5); //wait so not to overflow the bus
           if(AS3935_SPI)
 	    {
 	      int_src = lightningSPI.readInterruptReg();

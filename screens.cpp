@@ -536,7 +536,7 @@ bool HumidityScreen::draw() {
 
 
 LightningScreen::LightningScreen() {
-  setEnabled(true); // boot screen is always visible
+  
 }
 
 extern String lastErrorLine1;

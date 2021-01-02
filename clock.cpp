@@ -222,7 +222,7 @@ if(oldmin!=minute(t)) {
   CLOCK_H_LEN*cos(oldmin*2*PI/60)+CLOCK_X,CLOCK_H_LEN*sin(oldmin*2*PI/60)+CLOCK_Y,
    GREY);
    
- tft.drawLine(CLOCK_X, CLOCK_Y, CLOCK_R*sin(second()*2*PI/60)+CLOCK_X,-CLOCK_R*cos(second()*2*PI/60)+CLOCK_Y, WHITE);
+ tft.drawLine(CLOCK_X, CLOCK_Y, CLOCK_R*sin(oldsec*2*PI/60)+CLOCK_X,-CLOCK_R*cos(oldsec*2*PI/60)+CLOCK_Y, WHITE);
   
  return true;
 }

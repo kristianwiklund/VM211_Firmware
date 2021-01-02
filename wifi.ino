@@ -21,7 +21,7 @@
 //SOFTWARE.
 //
 
-// do not add this code unless with have an ESP01 connected...
+
 #ifdef WITH_ESP01
 
 #include <Arduino.h>

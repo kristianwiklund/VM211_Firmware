@@ -23,6 +23,9 @@ Connecting the ESP-01 to the arduino
 You need to connect the ESP01 to the Arduino through a level converter. You also need a 3.3V regulator connected to the input power rail on the arduino, the 3.3V arduino power is not good enough. 5V from USB is not sufficient, you need a power supply to power the device. 
 The ESP01 need to use serial3 (which is the only easily accessible port in the VM211 design). 
 
+Clock
+=====
+Using the clock feature requires either a DS1307 RTC (set to the correct time, and mine drifts...), a network card for NTP access (the above mentioned ESP-01) or both. The networking solution is recommended, it will use any DS1307 that are present for backup timekeeping.
 
 ![ESP Connection](/pics/esp.png)
 
