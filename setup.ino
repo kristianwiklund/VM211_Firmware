@@ -276,33 +276,20 @@ void setup(void)
   /* --- SD card feedback --- */
   Serial.println("***SD card feedback***");
   Serial.print("Initializing...");
-  // make sure that the default chip select pin is set to
-  // output, even if you don't use it:
-  pinMode(SS, OUTPUT);
+
   tft.setCursor(15, 195);
   tft.setTextColor(WHITE); 
   tft.setTextSize(2);
   tft.print("SD card: ");
   // see if the card is present and can be initialized:
-  if (SD.begin(chipSelect)) 
+  if (detectSD())
   {
-      Serial.println(" card initialized!");
-      SDpresent = 1;
       tft.setTextColor(GREEN); 
       tft.print("DETECTED");
-      //Check if our logfile is already on the card
-      if(SD.exists(logFileName))
-      {
-        Serial.print("Logfile '");
-        Serial.print(logFileName);
-        Serial.println("' exists!");
-        logFileExists = 1;
-      }
+
   }
   else
   {
-     Serial.println(" card failed, or not present!");
-     SDpresent = 0;
      tft.setTextColor(RED); 
      tft.print("NOT FOUND");
   }

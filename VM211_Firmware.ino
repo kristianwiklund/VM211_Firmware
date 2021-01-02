@@ -164,7 +164,7 @@ boolean LEDenabled = 1;     //1= LED on, 0= LED off. Will also declare pins for 
 // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
 // 53 on the Mega) must be left as an output or the SD library
 // functions will not work. On our TFT SD card shield we use 10
-const int chipSelect = 10;
+
 boolean SDpresent = 0;        //boolean to store if SD card is present during setup
 boolean logFileExists = 0;    //boolean to store if logfile exists on SD card
 
@@ -172,7 +172,6 @@ boolean logFileExists = 0;    //boolean to store if logfile exists on SD card
 //RTC_DS1307 rtc;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; // from RTCLib example
 
-const char * logFileName = "datalog.csv";   //CSV so you can easy load the data into MS Excel
 unsigned long allSeconds;
 int runDays;
 unsigned long secsRemaining;
@@ -326,45 +325,8 @@ void loop(void)
 
     }
     #endif
-      readCounter = 0;
-#if 0
-      //write dataString to SD (if SD card is present & we have passed the interval to log)
-      if(SDpresent)
-	{
+    readCounter = 0;
 
-	  File dataFile = SD.open(logFileName, FILE_WRITE);
-	  // open the file. note that only one file can be open at a time,
-	  // so you have to close this one before opening another.
-           
-	  // if the file is available, write to it:
-	  if (dataFile) 
-	    {
-	      if(!logFileExists)  //the logfile didn't exist, so first print headers
-		{
-		  Serial.print("Logfile '");
-		  Serial.print(logFileName);
-		  Serial.println("' did not exist, so print titles first..."); 
-		  dataFile.println("Time since boot [DD HH:MM:SS],Temperature [°C],Humidity [%],Pressure [mBar],Altitude [m],eCO2 [ppm],TVOC [ppb]");
-		  logFileExists = 1;
-		}
-	      dataFile.println(dataString);
-	      dataFile.close();
-
-	      // print to the serial port too:
-	      Serial.print("Written to file ");
-	      Serial.print(logFileName);
-	      Serial.print(" on SD card: ");
-	      Serial.println(dataString);
-	    }
-	  // if the file isn't open, pop up an error:
-	  else 
-	    {
-	      Serial.print("Error opening file ");
-	      Serial.print(logFileName);
-	      Serial.println(" on SD card! No data logged.");
-	    }
-	}
-#endif
   } 
 
   //only do next code every second

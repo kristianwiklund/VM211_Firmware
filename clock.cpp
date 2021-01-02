@@ -182,7 +182,7 @@ bool ClockScreen::draw() {
   }
   
 
-// cleanup
+// cleanup by drawing black on top of the old lines
 
   if(oldsec!=second(t)) {
     tft.drawLine(CLOCK_X, CLOCK_Y, CLOCK_R*sin(oldsec*2*PI/60)+CLOCK_X,-CLOCK_R*cos(oldsec*2*PI/60)+CLOCK_Y, BLACK);
@@ -203,11 +203,9 @@ if(oldmin!=minute(t)) {
       BLACK);
   }
 
-// redraw  
+// redraw by drawing white lines
   
  
-
-    
   oldmin=minute(t);
   oldsec=second(t);
   oldhour=hour(t);

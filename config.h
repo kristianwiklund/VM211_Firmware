@@ -1,6 +1,6 @@
 // configuration file to hold some basic constants to avoid magic numbers - refactoring work in progress
 
-#define SWversion "v4.0.5.kw"
+#define SWversion "v4.0.6.kw"
 
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -22,6 +22,10 @@
 
 #define INITIAL_SLIDESHOW_STATUS 1 // change to 0 to not run slideshow from start. Using the slideshow from start will show the config screens, before getting into the loop correctly.
 
+// sdcard settings
+#define SD_CHIP_SELECT 10
+#define LOGFILE "datalog.csv"   // original velleman filename 
+#define CONFIGFILE "config.cfg" // using the SDConfig library
 
 // for BME280
 

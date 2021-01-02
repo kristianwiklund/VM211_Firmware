@@ -37,6 +37,11 @@ MQTT broker host, NTP server, and timezone configuration are set in config.h
 
 -------------------------------------------------------
 
+Change log v4.0.6.kw
+- DID NOT: Replace the included SD card library, since the arduino-shipped one is b0rked with mega at the moment (at least until PR https://github.com/arduino-libraries/SD/pull/47 is merged)
+- Started move of file handling related functionality to filehandling.ino
+
+
 Change log v4.0.5.kw
 - Swapped out RTC library for a new one. Hence, added new dependencies, check the dependencies.sh file for which libs to install
 - Changed timekeeping library to use the "Time" library, since it is capable of resyncing with either NTP or RTC
