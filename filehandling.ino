@@ -1,6 +1,6 @@
 // Functions to manipulate the contents of the SD card (if present)
 //
-// (C) 2020 Kristian Wiklund
+// (C) 2020 Kristian Wiklund - except for the (minor) reuse of Velleman code, notably the csv header writer.
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -65,43 +65,26 @@ bool detectSD() {
   
 }
 
-// ***** start of the original SD writer code by Velleman
-#if 0
-      //write dataString to SD (if SD card is present & we have passed the interval to log)
-      if(SDpresent)
-	{
+// take the data from the sensors. Write to file, if sd card is present
+void writecsv() {
 
-	  File dataFile = SD.open(logFileName, FILE_WRITE);
-	  // open the file. note that only one file can be open at a time,
-	  // so you have to close this one before opening another.
-           
-	  // if the file is available, write to it:
-	  if (dataFile) 
-	    {
-	      if(!logFileExists)  //the logfile didn't exist, so first print headers
-		{
-		  Serial.print("Logfile '");
-		  Serial.print(logFileName);
-		  Serial.println("' did not exist, so print titles first..."); 
-		  dataFile.println("Time since boot [DD HH:MM:SS],Temperature [°C],Humidity [%],Pressure [mBar],Altitude [m],eCO2 [ppm],TVOC [ppb]");
-		  logFileExists = 1;
-		}
-	      dataFile.println(dataString);
-	      dataFile.close();
+  if(!SDpresent)
+    return;
 
-	      // print to the serial port too:
-	      Serial.print("Written to file ");
-	      Serial.print(logFileName);
-	      Serial.print(" on SD card: ");
-	      Serial.println(dataString);
-	    }
-	  // if the file isn't open, pop up an error:
-	  else 
-	    {
-	      Serial.print("Error opening file ");
-	      Serial.print(logFileName);
-	      Serial.println(" on SD card! No data logged.");
-	    }
-	}
-#endif
-// ***** end of the original SD writer code by Velleman
+  File fd = SD.open(LOGFILE, FILE_WRITE);
+  
+  if(!logFileExists) {
+    Serial.println("SD: Initializing log file");
+    // we will actually break velleman compatibility here and log wallclock time if we have a clock source
+    if(clockscreen.isEnabled()) 
+      fd.println("Date,Time,Temperature [°C],Humidity [%],Pressure [mBar],Altitude [m],eCO2 [ppm],TVOC [ppb]"); // date and time will be stored in this format: "2020-08-13,18:34:10", which excel is able to parse
+    else      
+      fd.println("Time since boot [DD HH:MM:SS],Temperature [°C],Humidity [%],Pressure [mBar],Altitude [m],eCO2 [ppm],TVOC [ppb]");
+  }
+
+  // write data for each sensor here. empty string if no sensor exists
+
+  fd.close();
+    
+  
+}
